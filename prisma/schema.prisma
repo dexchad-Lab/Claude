@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum ApplicationStatus {
+  APPLIED
+  SCREENING
+  INTERVIEW
+  OFFER
+  REJECTED
+  WITHDRAWN
+}
+
+model User {
+  id           String           @id @default(cuid())
+  name         String?
+  email        String           @unique
+  passwordHash String
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  applications JobApplication[]
+}
+
+model JobApplication {
+  id             String            @id @default(cuid())
+  userId         String
+  user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyName    String
+  jobTitle       String
+  jobDescription String
+  aboutCompany   String?
+  status         ApplicationStatus @default(APPLIED)
+  outcomeNotes   String?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  links         Link[]
+  resume        Resume?
+  statusHistory StatusHistory[]
+
+  @@index([userId])
+}
+
+model Link {
+  id               String         @id @default(cuid())
+  jobApplicationId String
+  jobApplication   JobApplication @relation(fields: [jobApplicationId], references: [id], onDelete: Cascade)
+  label            String
+  url              String
+  createdAt        DateTime       @default(now())
+
+  @@index([jobApplicationId])
+}
+
+model Resume {
+  id               String         @id @default(cuid())
+  jobApplicationId String         @unique
+  jobApplication   JobApplication @relation(fields: [jobApplicationId], references: [id], onDelete: Cascade)
+  originalFilename String
+  storedFilename   String
+  mimeType         String
+  sizeBytes        Int
+  uploadedAt       DateTime       @default(now())
+}
+
+model StatusHistory {
+  id               String            @id @default(cuid())
+  jobApplicationId String
+  jobApplication   JobApplication    @relation(fields: [jobApplicationId], references: [id], onDelete: Cascade)
+  fromStatus       ApplicationStatus?
+  toStatus         ApplicationStatus
+  note             String?
+  changedAt        DateTime          @default(now())
+
+  @@index([jobApplicationId])
+}
