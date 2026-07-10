@@ -1,6 +1,9 @@
 import type { NextAuthConfig } from "next-auth";
 
 export const authConfig = {
+  // Self-hosted app with no fixed canonical domain (localhost in dev,
+  // whatever host it's served behind in production) — trust the request Host.
+  trustHost: true,
   pages: {
     signIn: "/login",
   },
