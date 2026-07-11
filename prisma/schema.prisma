@@ -7,7 +7,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -66,7 +66,9 @@ model Resume {
   jobApplicationId String         @unique
   jobApplication   JobApplication @relation(fields: [jobApplicationId], references: [id], onDelete: Cascade)
   originalFilename String
-  storedFilename   String
+  // Vercel Blob URL in production, or a local filename under UPLOAD_DIR
+  // when running without a BLOB_READ_WRITE_TOKEN (local dev fallback).
+  storageKey       String
   mimeType         String
   sizeBytes        Int
   uploadedAt       DateTime       @default(now())

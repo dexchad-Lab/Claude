@@ -134,7 +134,7 @@ export async function deleteApplicationAction(applicationId: string) {
   if (!application) redirect("/dashboard");
 
   if (application.resume) {
-    await deleteResumeFile(application.resume.storedFilename);
+    await deleteResumeFile(application.resume.storageKey);
   }
 
   await prisma.jobApplication.delete({ where: { id: application.id } });

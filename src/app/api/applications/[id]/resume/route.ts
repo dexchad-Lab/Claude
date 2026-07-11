@@ -41,28 +41,28 @@ export async function POST(
     );
   }
 
-  const previousStoredFilename = application.resume?.storedFilename;
+  const previousStorageKey = application.resume?.storageKey;
 
   await prisma.resume.upsert({
     where: { jobApplicationId: application.id },
     create: {
       jobApplicationId: application.id,
       originalFilename: saved.originalFilename,
-      storedFilename: saved.storedFilename,
+      storageKey: saved.storageKey,
       mimeType: saved.mimeType,
       sizeBytes: saved.sizeBytes,
     },
     update: {
       originalFilename: saved.originalFilename,
-      storedFilename: saved.storedFilename,
+      storageKey: saved.storageKey,
       mimeType: saved.mimeType,
       sizeBytes: saved.sizeBytes,
       uploadedAt: new Date(),
     },
   });
 
-  if (previousStoredFilename) {
-    await deleteResumeFile(previousStoredFilename);
+  if (previousStorageKey) {
+    await deleteResumeFile(previousStorageKey);
   }
 
   return NextResponse.json({ ok: true });
@@ -83,7 +83,7 @@ export async function GET(
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  const buffer = await readResumeFile(application.resume.storedFilename);
+  const buffer = await readResumeFile(application.resume.storageKey);
   return new NextResponse(new Uint8Array(buffer), {
     headers: {
       "Content-Type": application.resume.mimeType,
@@ -110,7 +110,7 @@ export async function DELETE(
   }
 
   await prisma.resume.delete({ where: { jobApplicationId: application.id } });
-  await deleteResumeFile(application.resume.storedFilename);
+  await deleteResumeFile(application.resume.storageKey);
 
   return NextResponse.json({ ok: true });
 }

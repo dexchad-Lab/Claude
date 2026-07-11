@@ -43,10 +43,6 @@ next-env.d.ts
 
 /src/generated/prisma
 
-# prisma sqlite database
-/prisma/dev.db
-/prisma/dev.db-journal
-
-# uploaded resumes
+# uploaded resumes (local dev fallback when BLOB_READ_WRITE_TOKEN is unset)
 /uploads/*
 !/uploads/.gitkeep
