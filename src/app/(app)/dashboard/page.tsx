@@ -1,7 +1,16 @@
-import Link from "next/link";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { StatusBadge } from "@/components/StatusBadge";
+import { PipelineDashboard, type FunnelStage, type ActivityItem } from "@/components/PipelineDashboard";
+import { ApplicationsTable, type ApplicationRow } from "@/components/ApplicationsTable";
+import { STATUS_LABELS } from "@/components/StatusBadge";
+import type { ApplicationStatus } from "@/generated/prisma";
+
+const FUNNEL_STATUSES: ApplicationStatus[] = [
+  "APPLIED",
+  "SCREENING",
+  "INTERVIEW",
+  "OFFER",
+];
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -10,53 +19,104 @@ export default async function DashboardPage() {
   const applications = await prisma.jobApplication.findMany({
     where: { userId },
     orderBy: { updatedAt: "desc" },
+    include: {
+      links: true,
+      resume: true,
+      statusHistory: true,
+    },
   });
+
+  const total = applications.length;
+  const offers = applications.filter((app) => app.status === "OFFER").length;
+  const active = applications.filter(
+    (app) => app.status !== "REJECTED" && app.status !== "WITHDRAWN",
+  ).length;
+
+  const reachedCounts = new Map<ApplicationStatus, number>();
+  let respondedCount = 0;
+  for (const app of applications) {
+    const reached = new Set<ApplicationStatus>(
+      app.statusHistory.map((entry) => entry.toStatus),
+    );
+    reached.add(app.status);
+    for (const status of FUNNEL_STATUSES) {
+      if (reached.has(status)) {
+        reachedCounts.set(status, (reachedCounts.get(status) ?? 0) + 1);
+      }
+    }
+    if (
+      reached.has("SCREENING") ||
+      reached.has("INTERVIEW") ||
+      reached.has("OFFER")
+    ) {
+      respondedCount++;
+    }
+  }
+
+  const funnelStages: FunnelStage[] = FUNNEL_STATUSES.map((status) => ({
+    status,
+    label: STATUS_LABELS[status],
+    count: reachedCounts.get(status) ?? 0,
+  }));
+
+  const responseRate = total > 0 ? Math.round((respondedCount / total) * 100) : 0;
+
+  const activity: ActivityItem[] = applications
+    .flatMap((app) =>
+      app.statusHistory.map((entry) => ({
+        id: entry.id,
+        applicationId: app.id,
+        companyName: app.companyName,
+        jobTitle: app.jobTitle,
+        fromStatus: entry.fromStatus,
+        toStatus: entry.toStatus,
+        changedAt: entry.changedAt.toISOString(),
+      })),
+    )
+    .sort((a, b) => new Date(b.changedAt).getTime() - new Date(a.changedAt).getTime())
+    .slice(0, 8);
+
+  const tableRows: ApplicationRow[] = applications.map((app) => ({
+    id: app.id,
+    companyName: app.companyName,
+    jobTitle: app.jobTitle,
+    status: app.status,
+    updatedAt: app.updatedAt.toISOString(),
+    jobDescription: app.jobDescription,
+    aboutCompany: app.aboutCompany,
+    outcomeNotes: app.outcomeNotes,
+    links: app.links.map((link) => ({ id: link.id, label: link.label, url: link.url })),
+    resume: app.resume
+      ? {
+          originalFilename: app.resume.originalFilename,
+          uploadedAt: app.resume.uploadedAt.toISOString(),
+        }
+      : null,
+    statusHistory: app.statusHistory.map((entry) => ({
+      id: entry.id,
+      fromStatus: entry.fromStatus,
+      toStatus: entry.toStatus,
+      note: entry.note,
+      changedAt: entry.changedAt.toISOString(),
+    })),
+  }));
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-gray-900">
-          Your applications
-        </h1>
-        <Link
-          href="/applications/new"
-          className="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white hover:bg-gray-800"
-        >
-          New application
-        </Link>
-      </div>
+      <h1 className="mb-6 text-xl font-semibold text-gray-900">
+        Your applications
+      </h1>
 
-      {applications.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-gray-300 bg-white p-10 text-center text-sm text-gray-500">
-          No applications yet. Create your first one to get started.
-        </div>
-      ) : (
-        <ul className="divide-y divide-gray-200 rounded-lg border border-gray-200 bg-white">
-          {applications.map((app) => (
-            <li key={app.id}>
-              <Link
-                href={`/applications/${app.id}`}
-                className="flex items-center justify-between gap-4 px-4 py-4 hover:bg-gray-50 sm:px-6"
-              >
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-medium text-gray-900">
-                    {app.jobTitle}
-                  </p>
-                  <p className="truncate text-sm text-gray-500">
-                    {app.companyName}
-                  </p>
-                </div>
-                <div className="flex shrink-0 items-center gap-3">
-                  <StatusBadge status={app.status} />
-                  <span className="hidden text-xs text-gray-400 sm:inline">
-                    Updated {app.updatedAt.toLocaleDateString()}
-                  </span>
-                </div>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      )}
+      <PipelineDashboard
+        total={total}
+        active={active}
+        offers={offers}
+        responseRate={responseRate}
+        funnelStages={funnelStages}
+        activity={activity}
+      />
+
+      <ApplicationsTable applications={tableRows} />
     </div>
   );
 }

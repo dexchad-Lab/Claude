@@ -73,9 +73,18 @@ export default async function ApplicationDetailPage({
         <h2 className="mb-2 text-sm font-semibold text-gray-900">
           Job description
         </h2>
-        <p className="whitespace-pre-wrap text-sm text-gray-700">
-          {application.jobDescription}
-        </p>
+        {application.jobDescription ? (
+          <p className="whitespace-pre-wrap text-sm text-gray-700">
+            {application.jobDescription}
+          </p>
+        ) : (
+          <p className="text-sm text-gray-400 italic">
+            No description added yet.{" "}
+            <Link href={`/applications/${application.id}/edit`} className="underline">
+              Add one
+            </Link>
+          </p>
+        )}
       </div>
 
       {application.aboutCompany && (

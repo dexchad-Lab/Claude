@@ -75,7 +75,6 @@ export function ApplicationForm({
         <textarea
           id="jobDescription"
           name="jobDescription"
-          required
           rows={6}
           defaultValue={initial?.jobDescription}
           className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none"

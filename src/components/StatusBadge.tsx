@@ -28,4 +28,4 @@ export function StatusBadge({ status }: { status: ApplicationStatus }) {
   );
 }
 
-export { STATUS_LABELS };
+export { STATUS_LABELS, STATUS_STYLES };

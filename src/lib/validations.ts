@@ -19,10 +19,15 @@ export const linkSchema = z.object({
 export const applicationFormSchema = z.object({
   companyName: z.string().trim().min(1, "Company name is required").max(200),
   jobTitle: z.string().trim().min(1, "Job title is required").max(200),
-  jobDescription: z.string().trim().min(1, "Job description is required"),
+  jobDescription: z.string().trim().max(20000).optional().or(z.literal("")),
   aboutCompany: z.string().trim().max(5000).optional().or(z.literal("")),
   outcomeNotes: z.string().trim().max(5000).optional().or(z.literal("")),
   links: z.array(linkSchema).max(20).optional().default([]),
+});
+
+export const quickCreateSchema = z.object({
+  companyName: z.string().trim().min(1, "Company name is required").max(200),
+  jobTitle: z.string().trim().min(1, "Job title is required").max(200),
 });
 
 export const APPLICATION_STATUSES = [
