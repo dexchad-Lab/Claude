@@ -3,12 +3,14 @@
 import "dotenv/config";
 import { defineConfig } from "prisma/config";
 
-const databaseUrl = process.env["DATABASE_URL"];
-if (!databaseUrl) {
-  throw new Error(
-    "DATABASE_URL is not set. Copy .env.example to .env and set it to a Postgres connection string.",
-  );
-}
+// `prisma generate` (run from postinstall) only reads the schema file and
+// never connects to the database, so it must not fail just because
+// DATABASE_URL isn't set yet (e.g. on a fresh Vercel project before a
+// Postgres store is connected). Commands that actually need a connection
+// (migrate deploy/dev) will fail with a clear connection error of their own
+// if this placeholder is ever used for real.
+const databaseUrl =
+  process.env["DATABASE_URL"] ?? "postgresql://placeholder:placeholder@localhost:5432/placeholder";
 
 export default defineConfig({
   schema: "prisma/schema.prisma",
