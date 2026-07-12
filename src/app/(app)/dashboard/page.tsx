@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { PipelineDashboard, type FunnelStage, type ActivityItem } from "@/components/PipelineDashboard";
 import { ApplicationsTable, type ApplicationRow } from "@/components/ApplicationsTable";
+import { ApplicationsMobileList } from "@/components/ApplicationsMobileList";
 import { STATUS_LABELS } from "@/components/StatusBadge";
 import type { ApplicationStatus } from "@/generated/prisma";
 
@@ -118,7 +119,12 @@ export default async function DashboardPage() {
         activity={activity}
       />
 
-      <ApplicationsTable applications={tableRows} />
+      <div className="hidden md:block">
+        <ApplicationsTable applications={tableRows} />
+      </div>
+      <div className="md:hidden">
+        <ApplicationsMobileList applications={tableRows} />
+      </div>
     </div>
   );
 }
