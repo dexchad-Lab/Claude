@@ -5,6 +5,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { quickCreateSchema, APPLICATION_STATUSES } from "@/lib/validations";
 import { fetchJobPostingFromUrl } from "@/lib/jobPosting";
+import { deleteResumeFile } from "@/lib/upload";
 import { z } from "zod";
 
 async function requireOwnedApplication(applicationId: string, userId: string) {
@@ -172,6 +173,25 @@ export async function updateFollowUpAtAction(
     // clear any prior notification flag for it.
     data: { followUpAt: date, followUpNotifiedAt: null },
   });
+  revalidatePath("/dashboard");
+  return {};
+}
+
+export async function deleteApplicationAction(applicationId: string) {
+  const session = await auth();
+  if (!session?.user) return { error: "Unauthorized" };
+
+  const application = await prisma.jobApplication.findFirst({
+    where: { id: applicationId, userId: session.user.id },
+    include: { resume: true },
+  });
+  if (!application) return { error: "Not found" };
+
+  if (application.resume) {
+    await deleteResumeFile(application.resume.storageKey);
+  }
+  await prisma.jobApplication.delete({ where: { id: applicationId } });
+
   revalidatePath("/dashboard");
   return {};
 }

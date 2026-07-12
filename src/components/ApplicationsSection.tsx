@@ -10,8 +10,10 @@ const PAGE_SIZE = 25;
 
 export function ApplicationsSection({
   applications,
+  storageConfigured = true,
 }: {
   applications: ApplicationRow[];
+  storageConfigured?: boolean;
 }) {
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
@@ -69,16 +71,16 @@ export function ApplicationsSection({
       </div>
 
       {filtered.length === 0 && applications.length > 0 ? (
-        <div className="rounded-lg border border-dashed border-gray-300 bg-white p-8 text-center text-sm text-gray-400">
+        <div className="rounded-xl border border-dashed border-gray-300 bg-white p-8 text-center text-sm text-gray-400">
           No applications match your search or filter.
         </div>
       ) : (
         <>
           <div className="hidden md:block">
-            <ApplicationsTable applications={visible} />
+            <ApplicationsTable applications={visible} storageConfigured={storageConfigured} />
           </div>
           <div className="md:hidden">
-            <ApplicationsMobileList applications={visible} />
+            <ApplicationsMobileList applications={visible} storageConfigured={storageConfigured} />
           </div>
         </>
       )}

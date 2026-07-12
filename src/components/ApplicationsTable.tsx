@@ -2,9 +2,12 @@
 
 import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { STATUS_LABELS } from "@/components/StatusBadge";
 import { type StatusHistoryEntry } from "@/components/StatusTimeline";
 import { ApplicationDetailPanel } from "@/components/ApplicationDetailPanel";
+import { DeleteApplicationButton } from "@/components/DeleteApplicationButton";
+import { EditIcon } from "@/components/icons";
 import { APPLICATION_STATUSES } from "@/lib/validations";
 import type { ApplicationStatus } from "@/generated/prisma";
 import {
@@ -59,8 +62,10 @@ function focusCell(table: HTMLTableElement | null, row: number, col: number) {
 
 export function ApplicationsTable({
   applications,
+  storageConfigured = true,
 }: {
   applications: ApplicationRow[];
+  storageConfigured?: boolean;
 }) {
   const router = useRouter();
   const tableRef = useRef<HTMLTableElement>(null);
@@ -149,7 +154,7 @@ export function ApplicationsTable({
   }
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white">
+    <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
       <table ref={tableRef} className="w-full min-w-[680px] border-collapse text-sm">
         <thead>
           <tr className="border-b border-gray-200 text-left text-xs font-medium uppercase tracking-wide text-gray-500">
@@ -160,11 +165,12 @@ export function ApplicationsTable({
             <th className="hidden px-2 py-2 md:table-cell">Applied</th>
             <th className="hidden px-2 py-2 md:table-cell">Follow-up</th>
             <th className="hidden px-2 py-2 sm:table-cell">Updated</th>
+            <th className="px-2 py-2 text-right">Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr className="border-b border-gray-100 bg-gray-50">
-            <td colSpan={7} className="px-3 py-2">
+            <td colSpan={8} className="px-3 py-2">
               <div className="flex flex-wrap items-center gap-2">
                 <input
                   type="url"
@@ -233,7 +239,7 @@ export function ApplicationsTable({
                 className="w-full rounded border border-transparent bg-transparent px-2 py-1.5 focus:border-gray-300 focus:bg-white focus:outline-none"
               />
             </td>
-            <td className="p-1" colSpan={4}>
+            <td className="p-1" colSpan={5}>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
@@ -258,12 +264,13 @@ export function ApplicationsTable({
               isExpanded={expanded.has(app.id)}
               onToggle={() => toggleExpand(app.id)}
               onKeyDown={handleKeyDown}
+              storageConfigured={storageConfigured}
             />
           ))}
 
           {applications.length === 0 && (
             <tr>
-              <td colSpan={7} className="px-4 py-8 text-center text-sm text-gray-400">
+              <td colSpan={8} className="px-4 py-8 text-center text-sm text-gray-400">
                 No applications yet &mdash; add your first one above.
               </td>
             </tr>
@@ -280,6 +287,7 @@ function ApplicationRowGroup({
   isExpanded,
   onToggle,
   onKeyDown,
+  storageConfigured = true,
 }: {
   app: ApplicationRow;
   row: number;
@@ -290,6 +298,7 @@ function ApplicationRowGroup({
     row: number,
     col: number,
   ) => void;
+  storageConfigured?: boolean;
 }) {
   const router = useRouter();
   const [companyName, setCompanyName] = useState(app.companyName);
@@ -479,11 +488,28 @@ function ApplicationRowGroup({
         <td className="hidden px-2 py-2 text-xs text-gray-400 sm:table-cell">
           {savingField ? "Saving…" : new Date(app.updatedAt).toLocaleDateString()}
         </td>
+        <td className="px-2 py-1.5">
+          <div className="flex items-center justify-end gap-1">
+            <Link
+              href={`/applications/${app.id}/edit`}
+              aria-label="Edit details"
+              className="flex h-7 w-7 items-center justify-center rounded-md text-gray-400 hover:bg-gray-100 hover:text-gray-700"
+            >
+              <EditIcon className="h-3.5 w-3.5" />
+            </Link>
+            <DeleteApplicationButton
+              applicationId={app.id}
+              companyName={app.companyName}
+              showLabel={false}
+              className="flex h-7 w-7 items-center justify-center rounded-md text-gray-400 hover:bg-red-50 hover:text-red-600"
+            />
+          </div>
+        </td>
       </tr>
       {fieldError && (
         <tr>
           <td></td>
-          <td colSpan={6} className="px-2 pb-1 text-xs text-red-600">
+          <td colSpan={7} className="px-2 pb-1 text-xs text-red-600">
             {fieldError}
           </td>
         </tr>
@@ -491,8 +517,8 @@ function ApplicationRowGroup({
       {isExpanded && (
         <tr className="border-b border-gray-100 bg-gray-50/60">
           <td></td>
-          <td colSpan={6} className="px-3 py-4">
-            <ApplicationDetailPanel app={app} />
+          <td colSpan={7} className="px-3 py-4">
+            <ApplicationDetailPanel app={app} storageConfigured={storageConfigured} />
           </td>
         </tr>
       )}

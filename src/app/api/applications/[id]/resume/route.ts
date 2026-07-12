@@ -83,7 +83,16 @@ export async function GET(
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  const buffer = await readResumeFile(application.resume.storageKey);
+  let buffer: Buffer;
+  try {
+    buffer = await readResumeFile(application.resume.storageKey);
+  } catch {
+    return NextResponse.json(
+      { error: "That resume file is missing from storage. Try uploading it again." },
+      { status: 404 },
+    );
+  }
+
   return new NextResponse(new Uint8Array(buffer), {
     headers: {
       "Content-Type": application.resume.mimeType,

@@ -4,6 +4,7 @@ import { PipelineDashboard, type FunnelStage, type ActivityItem } from "@/compon
 import type { ApplicationRow } from "@/components/ApplicationsTable";
 import { ApplicationsSection } from "@/components/ApplicationsSection";
 import { STATUS_LABELS } from "@/components/StatusBadge";
+import { isBlobConfigured } from "@/lib/upload";
 import type { ApplicationStatus } from "@/generated/prisma";
 
 const FUNNEL_STATUSES: ApplicationStatus[] = [
@@ -106,9 +107,16 @@ export default async function DashboardPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-xl font-semibold text-gray-900">
-        Your applications
-      </h1>
+      <div className="mb-6">
+        <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">
+          Your applications
+        </h1>
+        <p className="mt-1 text-sm text-gray-500">
+          {total === 0
+            ? "Add your first application below to get started."
+            : `Tracking ${total} application${total === 1 ? "" : "s"} — keep at it.`}
+        </p>
+      </div>
 
       <PipelineDashboard
         total={total}
@@ -119,7 +127,7 @@ export default async function DashboardPage() {
         activity={activity}
       />
 
-      <ApplicationsSection applications={tableRows} />
+      <ApplicationsSection applications={tableRows} storageConfigured={isBlobConfigured()} />
     </div>
   );
 }

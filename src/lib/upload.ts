@@ -12,7 +12,7 @@ export const ALLOWED_RESUME_TYPES: Record<string, string> = {
 
 export const MAX_RESUME_SIZE_BYTES = 5 * 1024 * 1024;
 
-function isBlobConfigured() {
+export function isBlobConfigured() {
   return !!process.env.BLOB_READ_WRITE_TOKEN;
 }
 

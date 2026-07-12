@@ -6,7 +6,9 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { StatusTimeline } from "@/components/StatusTimeline";
 import { StatusChangeForm } from "@/components/StatusChangeForm";
 import { ResumeUploader } from "@/components/ResumeUploader";
-import { changeStatusAction, deleteApplicationAction } from "./actions";
+import { DeleteApplicationButton } from "@/components/DeleteApplicationButton";
+import { isBlobConfigured } from "@/lib/upload";
+import { changeStatusAction } from "./actions";
 
 export default async function ApplicationDetailPage({
   params,
@@ -31,7 +33,6 @@ export default async function ApplicationDetailPage({
   }
 
   const boundChangeStatus = changeStatusAction.bind(null, application.id);
-  const boundDelete = deleteApplicationAction.bind(null, application.id);
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
@@ -108,6 +109,7 @@ export default async function ApplicationDetailPage({
               }
             : null
         }
+        storageConfigured={isBlobConfigured()}
       />
 
       {application.outcomeNotes && (
@@ -144,14 +146,13 @@ export default async function ApplicationDetailPage({
         </div>
       </div>
 
-      <form action={boundDelete} className="border-t border-gray-200 pt-4">
-        <button
-          type="submit"
-          className="text-sm text-red-600 underline hover:text-red-700"
-        >
-          Delete application
-        </button>
-      </form>
+      <div className="border-t border-gray-200 pt-4">
+        <DeleteApplicationButton
+          applicationId={application.id}
+          companyName={application.companyName}
+          redirectTo="/dashboard"
+        />
+      </div>
     </div>
   );
 }

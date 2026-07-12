@@ -7,7 +7,6 @@ import { prisma } from "@/lib/prisma";
 import { applicationFormSchema, statusChangeSchema } from "@/lib/validations";
 import type { ApplicationFormState } from "@/components/ApplicationForm";
 import type { StatusChangeState } from "@/components/StatusChangeForm";
-import { deleteResumeFile } from "@/lib/upload";
 
 async function requireOwnedApplication(applicationId: string, userId: string) {
   const application = await prisma.jobApplication.findFirst({
@@ -121,22 +120,4 @@ export async function changeStatusAction(
 
   revalidatePath(`/applications/${application.id}`);
   return {};
-}
-
-export async function deleteApplicationAction(applicationId: string) {
-  const session = await auth();
-  if (!session?.user) redirect("/login");
-
-  const application = await prisma.jobApplication.findFirst({
-    where: { id: applicationId, userId: session.user.id },
-    include: { resume: true },
-  });
-  if (!application) redirect("/dashboard");
-
-  if (application.resume) {
-    await deleteResumeFile(application.resume.storageKey);
-  }
-
-  await prisma.jobApplication.delete({ where: { id: application.id } });
-  redirect("/dashboard");
 }

@@ -2,7 +2,7 @@ import dns from "dns/promises";
 import net from "net";
 
 const MAX_RESPONSE_BYTES = 3 * 1024 * 1024;
-const FETCH_TIMEOUT_MS = 8000;
+const FETCH_TIMEOUT_MS = 15000;
 
 function isPrivateOrReservedIp(ip: string): boolean {
   if (net.isIPv4(ip)) {

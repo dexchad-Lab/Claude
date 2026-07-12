@@ -6,9 +6,11 @@ import { useRouter } from "next/navigation";
 export function ResumeUploader({
   applicationId,
   resume,
+  storageConfigured = true,
 }: {
   applicationId: string;
   resume: { originalFilename: string; uploadedAt: string } | null;
+  storageConfigured?: boolean;
 }) {
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -111,6 +113,14 @@ export function ResumeUploader({
       />
 
       {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+
+      {!storageConfigured && (
+        <p className="mt-2 rounded-md bg-amber-50 px-2.5 py-1.5 text-xs text-amber-700">
+          File storage isn&apos;t fully set up yet, so this resume may not
+          stick around. Ask whoever manages the deployment to add Vercel
+          Blob storage.
+        </p>
+      )}
     </div>
   );
 }

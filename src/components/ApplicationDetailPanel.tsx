@@ -1,22 +1,32 @@
 import Link from "next/link";
 import { StatusTimeline } from "@/components/StatusTimeline";
 import { ResumeUploader } from "@/components/ResumeUploader";
+import { DeleteApplicationButton } from "@/components/DeleteApplicationButton";
+import { EditIcon, ExternalLinkIcon } from "@/components/icons";
 import type { ApplicationRow } from "@/components/ApplicationsTable";
 
-export function ApplicationDetailPanel({ app }: { app: ApplicationRow }) {
+export function ApplicationDetailPanel({
+  app,
+  storageConfigured = true,
+}: {
+  app: ApplicationRow;
+  storageConfigured?: boolean;
+}) {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-2 text-xs">
         <Link
           href={`/applications/${app.id}`}
-          className="rounded-md border border-gray-300 bg-white px-2.5 py-1 font-medium text-gray-700 hover:bg-gray-100"
+          className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-2.5 py-1 font-medium text-gray-700 hover:bg-gray-100"
         >
+          <ExternalLinkIcon className="h-3.5 w-3.5" />
           Open full page
         </Link>
         <Link
           href={`/applications/${app.id}/edit`}
-          className="rounded-md border border-gray-300 bg-white px-2.5 py-1 font-medium text-gray-700 hover:bg-gray-100"
+          className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-2.5 py-1 font-medium text-gray-700 hover:bg-gray-100"
         >
+          <EditIcon className="h-3.5 w-3.5" />
           Edit details
         </Link>
         {app.links.map((link) => (
@@ -30,6 +40,12 @@ export function ApplicationDetailPanel({ app }: { app: ApplicationRow }) {
             {link.label} &#8599;
           </a>
         ))}
+        <span className="ml-auto">
+          <DeleteApplicationButton
+            applicationId={app.id}
+            companyName={app.companyName}
+          />
+        </span>
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -63,7 +79,11 @@ export function ApplicationDetailPanel({ app }: { app: ApplicationRow }) {
             </>
           )}
           <div className="mt-3">
-            <ResumeUploader applicationId={app.id} resume={app.resume} />
+            <ResumeUploader
+              applicationId={app.id}
+              resume={app.resume}
+              storageConfigured={storageConfigured}
+            />
           </div>
         </div>
 

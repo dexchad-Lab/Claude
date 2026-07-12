@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { STATUS_LABELS } from "@/components/StatusBadge";
 import { ApplicationDetailPanel } from "@/components/ApplicationDetailPanel";
+import { DeleteApplicationButton } from "@/components/DeleteApplicationButton";
 import { APPLICATION_STATUSES } from "@/lib/validations";
 import type { ApplicationStatus } from "@/generated/prisma";
 import type { ApplicationRow } from "@/components/ApplicationsTable";
@@ -33,8 +34,10 @@ function toDateInputValue(iso: string | null) {
 
 export function ApplicationsMobileList({
   applications,
+  storageConfigured = true,
 }: {
   applications: ApplicationRow[];
+  storageConfigured?: boolean;
 }) {
   const router = useRouter();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
@@ -105,7 +108,7 @@ export function ApplicationsMobileList({
 
   return (
     <div className="space-y-3">
-      <div className="space-y-2 rounded-lg border border-gray-200 bg-white p-4">
+      <div className="space-y-2 rounded-xl border border-gray-200 bg-white shadow-sm p-4">
         <h2 className="text-sm font-semibold text-gray-900">
           Add application
         </h2>
@@ -153,7 +156,7 @@ export function ApplicationsMobileList({
       </div>
 
       {applications.length === 0 && (
-        <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-sm text-gray-400">
+        <div className="rounded-xl border border-dashed border-gray-300 bg-white p-6 text-center text-sm text-gray-400">
           No applications yet &mdash; add your first one above.
         </div>
       )}
@@ -164,6 +167,7 @@ export function ApplicationsMobileList({
           app={app}
           isExpanded={expanded.has(app.id)}
           onToggle={() => toggleExpand(app.id)}
+          storageConfigured={storageConfigured}
         />
       ))}
     </div>
@@ -174,10 +178,12 @@ function ApplicationCard({
   app,
   isExpanded,
   onToggle,
+  storageConfigured = true,
 }: {
   app: ApplicationRow;
   isExpanded: boolean;
   onToggle: () => void;
+  storageConfigured?: boolean;
 }) {
   const router = useRouter();
   const [companyName, setCompanyName] = useState(app.companyName);
@@ -271,7 +277,7 @@ function ApplicationCard({
   }
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white">
+    <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
       <div className="p-3">
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0 flex-1 space-y-1">
@@ -290,18 +296,26 @@ function ApplicationCard({
               className="w-full rounded-md border border-gray-200 px-2 py-1.5 text-sm text-gray-700 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             />
           </div>
-          <button
-            type="button"
-            onClick={onToggle}
-            aria-label={isExpanded ? "Collapse details" : "Expand details"}
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-gray-400 hover:bg-gray-100 hover:text-gray-700"
-          >
-            <span
-              className={`inline-block text-lg transition-transform ${isExpanded ? "rotate-90" : ""}`}
+          <div className="flex shrink-0 items-center">
+            <DeleteApplicationButton
+              applicationId={app.id}
+              companyName={app.companyName}
+              showLabel={false}
+              className="flex h-11 w-11 items-center justify-center rounded-md text-gray-400 hover:bg-red-50 hover:text-red-600"
+            />
+            <button
+              type="button"
+              onClick={onToggle}
+              aria-label={isExpanded ? "Collapse details" : "Expand details"}
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-gray-400 hover:bg-gray-100 hover:text-gray-700"
             >
-              &#9656;
-            </span>
-          </button>
+              <span
+                className={`inline-block text-lg transition-transform ${isExpanded ? "rotate-90" : ""}`}
+              >
+                &#9656;
+              </span>
+            </button>
+          </div>
         </div>
 
         <select
@@ -348,7 +362,7 @@ function ApplicationCard({
 
       {isExpanded && (
         <div className="border-t border-gray-100 bg-gray-50/60 p-3">
-          <ApplicationDetailPanel app={app} />
+          <ApplicationDetailPanel app={app} storageConfigured={storageConfigured} />
         </div>
       )}
     </div>

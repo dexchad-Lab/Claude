@@ -1,5 +1,13 @@
 import Link from "next/link";
 import { STATUS_LABELS } from "@/components/StatusBadge";
+import {
+  BriefcaseIcon,
+  FlameIcon,
+  TrophyIcon,
+  ChartBarIcon,
+  FunnelIcon,
+  ActivityIcon,
+} from "@/components/icons";
 import type { ApplicationStatus } from "@/generated/prisma";
 
 export type FunnelStage = {
@@ -29,21 +37,49 @@ const STATUS_DOT: Record<ApplicationStatus, string> = {
   WITHDRAWN: "bg-gray-400",
 };
 
-function StatTile({ label, value }: { label: string; value: string }) {
+const STAT_ACCENTS = {
+  blue: { icon: "bg-blue-50 text-blue-600", ring: "hover:border-blue-200" },
+  amber: { icon: "bg-amber-50 text-amber-600", ring: "hover:border-amber-200" },
+  green: { icon: "bg-green-50 text-green-600", ring: "hover:border-green-200" },
+  purple: { icon: "bg-purple-50 text-purple-600", ring: "hover:border-purple-200" },
+};
+
+function StatTile({
+  label,
+  value,
+  icon,
+  accent,
+}: {
+  label: string;
+  value: string;
+  icon: React.ReactNode;
+  accent: keyof typeof STAT_ACCENTS;
+}) {
+  const styles = STAT_ACCENTS[accent];
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4">
-      <p className="text-xs text-gray-500">{label}</p>
-      <p className="mt-1 text-2xl font-semibold text-gray-900">{value}</p>
+    <div
+      className={`rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition ${styles.ring}`}
+    >
+      <div className="flex items-center gap-3">
+        <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${styles.icon}`}>
+          {icon}
+        </div>
+        <div className="min-w-0">
+          <p className="truncate text-xs text-gray-500">{label}</p>
+          <p className="text-2xl font-semibold tracking-tight text-gray-900">{value}</p>
+        </div>
+      </div>
     </div>
   );
 }
 
 function FunnelChart({ stages, total }: { stages: FunnelStage[]; total: number }) {
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4">
-      <h2 className="mb-4 text-sm font-semibold text-gray-900">
-        Pipeline funnel
-      </h2>
+    <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="mb-4 flex items-center gap-2">
+        <FunnelIcon className="h-4 w-4 text-primary" />
+        <h2 className="text-sm font-semibold text-gray-900">Pipeline funnel</h2>
+      </div>
       <p className="mb-4 text-xs text-gray-500">
         Applications that have ever reached each stage
       </p>
@@ -81,10 +117,11 @@ function FunnelChart({ stages, total }: { stages: FunnelStage[]; total: number }
 
 function ActivityFeed({ items }: { items: ActivityItem[] }) {
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4">
-      <h2 className="mb-3 text-sm font-semibold text-gray-900">
-        Recent activity
-      </h2>
+    <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="mb-3 flex items-center gap-2">
+        <ActivityIcon className="h-4 w-4 text-primary" />
+        <h2 className="text-sm font-semibold text-gray-900">Recent activity</h2>
+      </div>
       {items.length === 0 ? (
         <p className="text-sm text-gray-400">No status changes yet.</p>
       ) : (
@@ -140,10 +177,30 @@ export function PipelineDashboard({
   return (
     <div className="mb-8 space-y-4">
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <StatTile label="Total applications" value={String(total)} />
-        <StatTile label="Active" value={String(active)} />
-        <StatTile label="Offers" value={String(offers)} />
-        <StatTile label="Response rate" value={`${responseRate}%`} />
+        <StatTile
+          label="Total applications"
+          value={String(total)}
+          icon={<BriefcaseIcon className="h-5 w-5" />}
+          accent="blue"
+        />
+        <StatTile
+          label="Active"
+          value={String(active)}
+          icon={<FlameIcon className="h-5 w-5" />}
+          accent="amber"
+        />
+        <StatTile
+          label="Offers"
+          value={String(offers)}
+          icon={<TrophyIcon className="h-5 w-5" />}
+          accent="green"
+        />
+        <StatTile
+          label="Response rate"
+          value={`${responseRate}%`}
+          icon={<ChartBarIcon className="h-5 w-5" />}
+          accent="purple"
+        />
       </div>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <FunnelChart stages={funnelStages} total={total} />
