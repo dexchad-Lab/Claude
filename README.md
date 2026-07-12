@@ -53,5 +53,6 @@ If `BLOB_READ_WRITE_TOKEN` isn't set, resume uploads silently fall back to local
 - Chat is 1:1 and requires both users to accept a connection request first (`/network`) — there's no public user directory or search-by-name, only add-by-email, to avoid exposing a full list of accounts.
 - Quick-adding an application from a job posting URL only auto-fills details when the page exposes `schema.org` `JobPosting` structured data (common on ATS platforms like Greenhouse/Lever). Sites like LinkedIn and Indeed block this and will just attach the link for manual entry.
 - Follow-up reminders are sent once per application: setting or changing a follow-up date clears its "already notified" flag, so editing the date re-arms the reminder.
+- Forgotten passwords are reset via a one-hour, single-use emailed link (`/forgot-password` → `/reset-password`). Uses the same Resend config as follow-up reminders; without `RESEND_API_KEY` set, the reset link is logged to the server console instead of emailed, so the flow is still testable locally. The request form always shows the same message regardless of whether the email is registered, to avoid leaking which accounts exist.
 - `npx prisma studio` — browse the database.
 - `npm run build && npm run lint` — verify before shipping changes.

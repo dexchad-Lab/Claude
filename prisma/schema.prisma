@@ -29,10 +29,25 @@ model User {
   updatedAt    DateTime         @updatedAt
   applications JobApplication[]
 
-  connectionsSent     Connection[] @relation("ConnectionRequester")
-  connectionsReceived Connection[] @relation("ConnectionAddressee")
-  messagesSent        Message[]    @relation("MessageSender")
-  messagesReceived    Message[]    @relation("MessageRecipient")
+  connectionsSent     Connection[]         @relation("ConnectionRequester")
+  connectionsReceived Connection[]         @relation("ConnectionAddressee")
+  messagesSent        Message[]            @relation("MessageSender")
+  messagesReceived    Message[]            @relation("MessageRecipient")
+  passwordResetTokens PasswordResetToken[]
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // SHA-256 hash of the raw token sent in the email — only the hash is
+  // stored, so a DB leak alone can't be used to reset someone's password.
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
 }
 
 enum ConnectionStatus {

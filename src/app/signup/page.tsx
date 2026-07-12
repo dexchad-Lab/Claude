@@ -72,6 +72,23 @@ export default function SignupPage() {
             />
           </div>
 
+          <div>
+            <label
+              htmlFor="confirmPassword"
+              className="mb-1 block text-sm font-medium text-gray-700"
+            >
+              Confirm password
+            </label>
+            <input
+              id="confirmPassword"
+              name="confirmPassword"
+              type="password"
+              required
+              minLength={8}
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            />
+          </div>
+
           {state.error && (
             <p className="text-sm text-red-600">{state.error}</p>
           )}

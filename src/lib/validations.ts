@@ -1,10 +1,16 @@
 import { z } from "zod";
 
-export const signupSchema = z.object({
-  name: z.string().trim().min(1, "Name is required").max(100),
-  email: z.email("Enter a valid email"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
-});
+export const signupSchema = z
+  .object({
+    name: z.string().trim().min(1, "Name is required").max(100),
+    email: z.email("Enter a valid email"),
+    password: z.string().min(8, "Password must be at least 8 characters"),
+    confirmPassword: z.string().min(1, "Please confirm your password"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 export const loginSchema = z.object({
   email: z.email("Enter a valid email"),
@@ -65,6 +71,21 @@ export const changePasswordSchema = z
 export const connectionRequestSchema = z.object({
   email: z.email("Enter a valid email"),
 });
+
+export const forgotPasswordSchema = z.object({
+  email: z.email("Enter a valid email"),
+});
+
+export const resetPasswordSchema = z
+  .object({
+    token: z.string().min(1, "Missing reset token"),
+    newPassword: z.string().min(8, "Password must be at least 8 characters"),
+    confirmPassword: z.string().min(1, "Please confirm your password"),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 export const messageSchema = z.object({
   content: z.string().trim().min(1, "Message can't be empty").max(4000),
