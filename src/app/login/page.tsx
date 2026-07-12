@@ -19,7 +19,7 @@ export default function LoginPage() {
           Log in
         </h1>
         <p className="mb-6 text-sm text-gray-500">
-          Welcome back to your job tracker.
+          Welcome back. Let&apos;s find your next job.
         </p>
 
         <form action={formAction} className="space-y-4">

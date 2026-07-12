@@ -19,7 +19,7 @@ export default function SignupPage() {
           Create your account
         </h1>
         <p className="mb-6 text-sm text-gray-500">
-          Track your job applications in one place.
+          Sign up free and land your next job faster.
         </p>
 
         <form action={formAction} className="space-y-4">

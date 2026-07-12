@@ -53,11 +53,26 @@ body {
 
 .glow-text {
   color: var(--brand-primary);
-  animation: glow-pulse 2.6s ease-in-out infinite;
+  text-shadow:
+    0 0 6px rgba(3, 105, 161, 0),
+    0 0 16px rgba(3, 105, 161, 0),
+    0 0 32px rgba(22, 163, 74, 0);
+  transition: text-shadow 0.3s ease;
+  cursor: default;
+}
+
+.glow-text:hover,
+.glow-text:focus-visible {
+  animation: glow-pulse 1.8s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .glow-text {
+  .glow-text:hover,
+  .glow-text:focus-visible {
     animation: none;
+    text-shadow:
+      0 0 6px rgba(3, 105, 161, 0.55),
+      0 0 16px rgba(3, 105, 161, 0.35),
+      0 0 32px rgba(22, 163, 74, 0.25);
   }
 }

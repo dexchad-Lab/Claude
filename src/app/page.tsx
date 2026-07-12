@@ -27,9 +27,9 @@ function IconStroke({
 
 const FEATURES = [
   {
-    title: "Track every application",
+    title: "See it all in one place",
     description:
-      "Job description, company info, links, and the exact tailored resume you sent — all in one place, per application.",
+      "The job post, the company, the links, and the exact resume you sent. Every application, all in one spot.",
     icon: (
       <IconStroke>
         <path d="M9 3h6a2 2 0 0 1 2 2v1H7V5a2 2 0 0 1 2-2Z" />
@@ -39,9 +39,9 @@ const FEATURES = [
     ),
   },
   {
-    title: "See your pipeline at a glance",
+    title: "Watch your progress",
     description:
-      "A funnel view of how far your applications get, response rate, and a timeline of every status change.",
+      "See how far each application gets, your response rate, and every change over time — at a glance.",
     icon: (
       <IconStroke>
         <path d="M4 5h16l-6 8v6l-4 2v-8L4 5Z" />
@@ -49,9 +49,9 @@ const FEATURES = [
     ),
   },
   {
-    title: "Never miss a follow-up",
+    title: "Never forget to follow up",
     description:
-      "Set a follow-up date on any application and it's flagged the moment it's overdue — with a daily email digest.",
+      "Pick a date, and we'll email you the moment it's time to follow up. No more guessing.",
     icon: (
       <IconStroke>
         <circle cx="12" cy="12" r="9" />
@@ -60,9 +60,9 @@ const FEATURES = [
     ),
   },
   {
-    title: "Add jobs in one click",
+    title: "Add a job in seconds",
     description:
-      "Paste a job posting URL and Huntly auto-fills the company, title, and description wherever the listing supports it.",
+      "Paste the link. Huntly fills in the company, title, and description for you — instantly.",
     icon: (
       <IconStroke>
         <path d="M10 13a5 5 0 0 0 7.07 0l2.83-2.83a5 5 0 0 0-7.07-7.07L11.5 4.5" />
@@ -71,9 +71,9 @@ const FEATURES = [
     ),
   },
   {
-    title: "Build your network",
+    title: "You're not doing this alone",
     description:
-      "Connect with other job seekers, chat in real time, and see who's online while you both grind through applications.",
+      "Connect with other job seekers, chat live, and cheer each other on while you both search.",
     icon: (
       <IconStroke>
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -83,9 +83,9 @@ const FEATURES = [
     ),
   },
   {
-    title: "Search, filter, and scale",
+    title: "Built to grow with you",
     description:
-      "Search across every application, filter by status, and page through hundreds of rows without the UI slowing down.",
+      "Search, filter, and scroll through hundreds of applications without ever slowing down.",
     icon: (
       <IconStroke>
         <circle cx="11" cy="11" r="7" />
@@ -98,21 +98,21 @@ const FEATURES = [
 const STEPS = [
   {
     step: "1",
-    title: "Add an application",
+    title: "Add a job",
     description:
-      "Paste a job URL or fill it in yourself — company, role, description, links, and your tailored resume.",
+      "Paste the link, or type it in yourself. Company, role, description, links, and your resume.",
   },
   {
     step: "2",
-    title: "Track it through the pipeline",
+    title: "Track your progress",
     description:
-      "Move it from Applied to Screening, Interview, and beyond. Every change is saved to a timeline automatically.",
+      "Move it from Applied to Interview to Offer. We save every step for you, automatically.",
   },
   {
     step: "3",
-    title: "Follow up, land the offer",
+    title: "Follow up. Land it.",
     description:
-      "Set a follow-up date and get emailed the moment it's due — so nothing good ever slips through the cracks.",
+      "We'll email you the moment it's time to follow up — so you never miss your shot.",
   },
 ];
 
@@ -155,7 +155,7 @@ export default async function Home() {
           />
           <div className="mx-auto max-w-3xl px-4 py-20 text-center sm:px-6 sm:py-28">
             <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-medium text-gray-600">
-              Now with automated follow-up reminders
+              New: we&apos;ll remind you to follow up
             </span>
             <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-gray-900 sm:text-6xl">
               Hunt smarter.
@@ -163,9 +163,9 @@ export default async function Home() {
               <span className="glow-text">Land</span> faster.
             </h1>
             <p className="mx-auto mt-5 max-w-xl text-lg text-gray-500">
-              Huntly is the command center for your job search — every
-              application, every tailored resume, every follow-up, in one
-              place so nothing falls through the cracks.
+              Huntly keeps your whole job search in one place. Every
+              application. Every resume. Every follow-up. Nothing gets lost,
+              and nothing slows you down.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link
@@ -196,8 +196,8 @@ export default async function Home() {
               <span className="glow-text">Nothing</span>{" "}it doesn&apos;t.
             </h2>
             <p className="mt-3 text-base text-gray-500">
-              Built for people running a serious, high-volume job search —
-              not a single spreadsheet tab.
+              Made for people who apply to a lot of jobs — not for a messy
+              spreadsheet.
             </p>
           </div>
           <div className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -228,7 +228,7 @@ export default async function Home() {
                 How it works
               </h2>
               <p className="mt-3 text-base text-gray-500">
-                Three steps between you and an organized job search.
+                Just three steps to get organized.
               </p>
             </div>
             <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-3">
@@ -261,8 +261,8 @@ export default async function Home() {
               role?
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-base text-gray-300">
-              Start tracking your applications the right way — it takes less
-              than a minute to sign up.
+              Sign up in under a minute. It&apos;s free, and it might just
+              land you the job.
             </p>
             <div className="mt-8 flex justify-center">
               <Link
