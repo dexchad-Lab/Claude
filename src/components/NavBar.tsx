@@ -9,7 +9,12 @@ export function NavBar({ userLabel }: { userLabel: string }) {
           Job Application Tracker
         </Link>
         <div className="flex items-center gap-4">
-          <span className="text-sm text-gray-500">{userLabel}</span>
+          <Link
+            href="/settings"
+            className="text-sm text-gray-500 hover:text-gray-900"
+          >
+            {userLabel}
+          </Link>
           <form action={signOutAction}>
             <button
               type="submit"

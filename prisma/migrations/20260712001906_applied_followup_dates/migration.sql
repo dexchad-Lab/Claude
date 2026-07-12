@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "JobApplication" ADD COLUMN     "appliedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN     "followUpAt" TIMESTAMP(3);

@@ -13,6 +13,9 @@ import {
   updateCompanyNameAction,
   updateJobTitleAction,
   quickChangeStatusAction,
+  updateAppliedAtAction,
+  updateFollowUpAtAction,
+  fetchJobFromUrlAction,
 } from "@/app/(app)/dashboard/actions";
 
 export type ApplicationRow = {
@@ -21,6 +24,8 @@ export type ApplicationRow = {
   jobTitle: string;
   status: ApplicationStatus;
   updatedAt: string;
+  appliedAt: string;
+  followUpAt: string | null;
   jobDescription: string;
   aboutCompany: string | null;
   outcomeNotes: string | null;
@@ -28,6 +33,11 @@ export type ApplicationRow = {
   resume: { originalFilename: string; uploadedAt: string } | null;
   statusHistory: StatusHistoryEntry[];
 };
+
+function toDateInputValue(iso: string | null) {
+  if (!iso) return "";
+  return iso.slice(0, 10);
+}
 
 const STATUS_SELECT_STYLES: Record<ApplicationStatus, string> = {
   APPLIED: "bg-blue-50 text-blue-700",
@@ -58,8 +68,33 @@ export function ApplicationsTable({
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [newCompany, setNewCompany] = useState("");
   const [newTitle, setNewTitle] = useState("");
+  const [newDescription, setNewDescription] = useState("");
+  const [newUrl, setNewUrl] = useState("");
   const [createError, setCreateError] = useState<string | null>(null);
+  const [fetchNotice, setFetchNotice] = useState<string | null>(null);
   const [creating, startCreating] = useTransition();
+  const [fetching, startFetching] = useTransition();
+
+  function handleFetchUrl() {
+    if (!newUrl.trim()) return;
+    setFetchNotice(null);
+    setCreateError(null);
+    startFetching(async () => {
+      const result = await fetchJobFromUrlAction(newUrl.trim());
+      if (result.error) {
+        setFetchNotice(result.error);
+        return;
+      }
+      if (result.companyName) setNewCompany(result.companyName);
+      if (result.jobTitle) setNewTitle(result.jobTitle);
+      if (result.jobDescription) setNewDescription(result.jobDescription);
+      setFetchNotice(
+        result.foundDetails
+          ? "Filled in from that page — review before adding."
+          : "Couldn't auto-detect details from that page (common for LinkedIn/Indeed) — the link will still be attached, just fill in the rest manually.",
+      );
+    });
+  }
 
   function toggleExpand(id: string) {
     setExpanded((prev) => {
@@ -97,6 +132,8 @@ export function ApplicationsTable({
     const formData = new FormData();
     formData.set("companyName", newCompany);
     formData.set("jobTitle", newTitle);
+    formData.set("jobDescription", newDescription);
+    formData.set("sourceUrl", newUrl.trim());
     startCreating(async () => {
       const result = await quickCreateApplicationAction(formData);
       if (result.error) {
@@ -105,6 +142,9 @@ export function ApplicationsTable({
       }
       setNewCompany("");
       setNewTitle("");
+      setNewDescription("");
+      setNewUrl("");
+      setFetchNotice(null);
       router.refresh();
     });
   }
@@ -118,10 +158,42 @@ export function ApplicationsTable({
             <th className="px-2 py-2">Company</th>
             <th className="px-2 py-2">Job title</th>
             <th className="px-2 py-2">Status</th>
+            <th className="hidden px-2 py-2 md:table-cell">Applied</th>
+            <th className="hidden px-2 py-2 md:table-cell">Follow-up</th>
             <th className="hidden px-2 py-2 sm:table-cell">Updated</th>
           </tr>
         </thead>
         <tbody>
+          <tr className="border-b border-gray-100 bg-gray-50">
+            <td colSpan={7} className="px-3 py-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <input
+                  type="url"
+                  placeholder="Paste a job posting URL to auto-fill (optional)"
+                  value={newUrl}
+                  onChange={(e) => setNewUrl(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleFetchUrl();
+                    }
+                  }}
+                  className="w-72 max-w-full rounded-md border border-gray-300 bg-white px-2 py-1 text-xs focus:border-gray-400 focus:outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={handleFetchUrl}
+                  disabled={fetching || !newUrl.trim()}
+                  className="rounded-md border border-gray-300 bg-white px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-100 disabled:opacity-50"
+                >
+                  {fetching ? "Fetching…" : "Fetch details"}
+                </button>
+                {fetchNotice && (
+                  <span className="text-xs text-gray-500">{fetchNotice}</span>
+                )}
+              </div>
+            </td>
+          </tr>
           <tr className="border-b border-gray-100 bg-gray-50">
             <td className="px-3 py-2 text-gray-300">+</td>
             <td className="p-1">
@@ -162,7 +234,7 @@ export function ApplicationsTable({
                 className="w-full rounded border border-transparent bg-transparent px-2 py-1.5 focus:border-gray-300 focus:bg-white focus:outline-none"
               />
             </td>
-            <td className="p-1" colSpan={2}>
+            <td className="p-1" colSpan={4}>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
@@ -192,7 +264,7 @@ export function ApplicationsTable({
 
           {applications.length === 0 && (
             <tr>
-              <td colSpan={5} className="px-4 py-8 text-center text-sm text-gray-400">
+              <td colSpan={7} className="px-4 py-8 text-center text-sm text-gray-400">
                 No applications yet &mdash; add your first one above.
               </td>
             </tr>
@@ -223,9 +295,16 @@ function ApplicationRowGroup({
   const router = useRouter();
   const [companyName, setCompanyName] = useState(app.companyName);
   const [jobTitle, setJobTitle] = useState(app.jobTitle);
+  const [appliedAt, setAppliedAt] = useState(toDateInputValue(app.appliedAt));
+  const [followUpAt, setFollowUpAt] = useState(toDateInputValue(app.followUpAt));
   const [savingField, setSavingField] = useState<string | null>(null);
   const [fieldError, setFieldError] = useState<string | null>(null);
   const [, startTransition] = useTransition();
+
+  const isOverdue =
+    !!app.followUpAt &&
+    new Date(app.followUpAt) < new Date(new Date().toDateString()) &&
+    !["OFFER", "REJECTED", "WITHDRAWN"].includes(app.status);
 
   function saveCompanyName() {
     const trimmed = companyName.trim();
@@ -275,6 +354,40 @@ function ApplicationRowGroup({
       setSavingField(null);
       if (result.error) {
         setFieldError(result.error);
+      } else {
+        router.refresh();
+      }
+    });
+  }
+
+  function saveAppliedAt() {
+    if (!appliedAt) {
+      setAppliedAt(toDateInputValue(app.appliedAt));
+      return;
+    }
+    setSavingField("appliedAt");
+    setFieldError(null);
+    startTransition(async () => {
+      const result = await updateAppliedAtAction(app.id, appliedAt);
+      setSavingField(null);
+      if (result.error) {
+        setFieldError(result.error);
+        setAppliedAt(toDateInputValue(app.appliedAt));
+      } else {
+        router.refresh();
+      }
+    });
+  }
+
+  function saveFollowUpAt() {
+    setSavingField("followUpAt");
+    setFieldError(null);
+    startTransition(async () => {
+      const result = await updateFollowUpAtAction(app.id, followUpAt);
+      setSavingField(null);
+      if (result.error) {
+        setFieldError(result.error);
+        setFollowUpAt(toDateInputValue(app.followUpAt));
       } else {
         router.refresh();
       }
@@ -338,6 +451,32 @@ function ApplicationRowGroup({
             ))}
           </select>
         </td>
+        <td className="hidden p-1 md:table-cell">
+          <input
+            data-row={row}
+            data-col={3}
+            type="date"
+            value={appliedAt}
+            onChange={(e) => setAppliedAt(e.target.value)}
+            onBlur={saveAppliedAt}
+            onKeyDown={(e) => onKeyDown(e, row, 3)}
+            className="w-full rounded border border-transparent bg-transparent px-2 py-1.5 text-xs text-gray-600 focus:border-gray-300 focus:bg-white focus:outline-none"
+          />
+        </td>
+        <td className="hidden p-1 md:table-cell">
+          <input
+            data-row={row}
+            data-col={4}
+            type="date"
+            value={followUpAt}
+            onChange={(e) => setFollowUpAt(e.target.value)}
+            onBlur={saveFollowUpAt}
+            onKeyDown={(e) => onKeyDown(e, row, 4)}
+            className={`w-full rounded border border-transparent bg-transparent px-2 py-1.5 text-xs focus:border-gray-300 focus:bg-white focus:outline-none ${
+              isOverdue ? "font-medium text-red-600" : "text-gray-600"
+            }`}
+          />
+        </td>
         <td className="hidden px-2 py-2 text-xs text-gray-400 sm:table-cell">
           {savingField ? "Saving…" : new Date(app.updatedAt).toLocaleDateString()}
         </td>
@@ -345,7 +484,7 @@ function ApplicationRowGroup({
       {fieldError && (
         <tr>
           <td></td>
-          <td colSpan={4} className="px-2 pb-1 text-xs text-red-600">
+          <td colSpan={6} className="px-2 pb-1 text-xs text-red-600">
             {fieldError}
           </td>
         </tr>
@@ -353,7 +492,7 @@ function ApplicationRowGroup({
       {isExpanded && (
         <tr className="border-b border-gray-100 bg-gray-50/60">
           <td></td>
-          <td colSpan={4} className="space-y-4 px-3 py-4">
+          <td colSpan={6} className="space-y-4 px-3 py-4">
             <div className="flex flex-wrap items-center gap-2 text-xs">
               <Link
                 href={`/applications/${app.id}`}

@@ -82,6 +82,8 @@ export default async function DashboardPage() {
     jobTitle: app.jobTitle,
     status: app.status,
     updatedAt: app.updatedAt.toISOString(),
+    appliedAt: app.appliedAt.toISOString(),
+    followUpAt: app.followUpAt ? app.followUpAt.toISOString() : null,
     jobDescription: app.jobDescription,
     aboutCompany: app.aboutCompany,
     outcomeNotes: app.outcomeNotes,

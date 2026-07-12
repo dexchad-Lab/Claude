@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { quickCreateSchema, APPLICATION_STATUSES } from "@/lib/validations";
+import { fetchJobPostingFromUrl } from "@/lib/jobPosting";
 import { z } from "zod";
 
 async function requireOwnedApplication(applicationId: string, userId: string) {
@@ -21,6 +22,8 @@ export async function quickCreateApplicationAction(formData: FormData) {
   const parsed = quickCreateSchema.safeParse({
     companyName: formData.get("companyName"),
     jobTitle: formData.get("jobTitle"),
+    jobDescription: formData.get("jobDescription"),
+    sourceUrl: formData.get("sourceUrl"),
   });
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Invalid input" };
@@ -32,6 +35,10 @@ export async function quickCreateApplicationAction(formData: FormData) {
         userId: session.user.id,
         companyName: parsed.data.companyName,
         jobTitle: parsed.data.jobTitle,
+        jobDescription: parsed.data.jobDescription || "",
+        links: parsed.data.sourceUrl
+          ? { create: [{ label: "Job Posting", url: parsed.data.sourceUrl }] }
+          : undefined,
       },
     });
     await tx.statusHistory.create({
@@ -46,6 +53,26 @@ export async function quickCreateApplicationAction(formData: FormData) {
 
   revalidatePath("/dashboard");
   return { id: application.id };
+}
+
+export async function fetchJobFromUrlAction(url: string) {
+  const session = await auth();
+  if (!session?.user) return { error: "Unauthorized" };
+
+  const parsedUrl = z.url().safeParse(url);
+  if (!parsedUrl.success) return { error: "Enter a valid URL" };
+
+  try {
+    const result = await fetchJobPostingFromUrl(parsedUrl.data);
+    return {
+      companyName: result.companyName ?? "",
+      jobTitle: result.jobTitle ?? "",
+      jobDescription: result.jobDescription ?? "",
+      foundDetails: !!(result.companyName || result.jobTitle || result.jobDescription),
+    };
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Couldn't fetch that URL" };
+  }
 }
 
 export async function updateCompanyNameAction(
@@ -91,6 +118,57 @@ export async function updateJobTitleAction(
   await prisma.jobApplication.update({
     where: { id: applicationId },
     data: { jobTitle: trimmed.slice(0, 200) },
+  });
+  revalidatePath("/dashboard");
+  return {};
+}
+
+export async function updateAppliedAtAction(
+  applicationId: string,
+  dateStr: string,
+) {
+  const session = await auth();
+  if (!session?.user) return { error: "Unauthorized" };
+
+  const date = new Date(dateStr);
+  if (Number.isNaN(date.getTime())) return { error: "Invalid date" };
+
+  const application = await requireOwnedApplication(
+    applicationId,
+    session.user.id,
+  );
+  if (!application) return { error: "Not found" };
+
+  await prisma.jobApplication.update({
+    where: { id: applicationId },
+    data: { appliedAt: date },
+  });
+  revalidatePath("/dashboard");
+  return {};
+}
+
+export async function updateFollowUpAtAction(
+  applicationId: string,
+  dateStr: string,
+) {
+  const session = await auth();
+  if (!session?.user) return { error: "Unauthorized" };
+
+  let date: Date | null = null;
+  if (dateStr) {
+    date = new Date(dateStr);
+    if (Number.isNaN(date.getTime())) return { error: "Invalid date" };
+  }
+
+  const application = await requireOwnedApplication(
+    applicationId,
+    session.user.id,
+  );
+  if (!application) return { error: "Not found" };
+
+  await prisma.jobApplication.update({
+    where: { id: applicationId },
+    data: { followUpAt: date },
   });
   revalidatePath("/dashboard");
   return {};

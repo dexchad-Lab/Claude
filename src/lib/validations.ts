@@ -28,6 +28,8 @@ export const applicationFormSchema = z.object({
 export const quickCreateSchema = z.object({
   companyName: z.string().trim().min(1, "Company name is required").max(200),
   jobTitle: z.string().trim().min(1, "Job title is required").max(200),
+  jobDescription: z.string().trim().max(20000).optional().or(z.literal("")),
+  sourceUrl: z.url().optional().or(z.literal("")),
 });
 
 export const APPLICATION_STATUSES = [
@@ -43,3 +45,19 @@ export const statusChangeSchema = z.object({
   status: z.enum(APPLICATION_STATUSES),
   note: z.string().trim().max(2000).optional().or(z.literal("")),
 });
+
+export const profileSchema = z.object({
+  name: z.string().trim().min(1, "Name is required").max(100),
+  email: z.email("Enter a valid email"),
+});
+
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, "Current password is required"),
+    newPassword: z.string().min(8, "New password must be at least 8 characters"),
+    confirmPassword: z.string().min(1, "Please confirm your new password"),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "New passwords do not match",
+    path: ["confirmPassword"],
+  });

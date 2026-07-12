@@ -47,8 +47,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return token;
     },
     async session({ session, token }) {
-      if (session.user) {
+      if (session.user && token.id) {
         session.user.id = token.id as string;
+        // Look up fresh name/email so profile edits in Settings show up
+        // immediately instead of waiting for the JWT to be re-issued.
+        const user = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: { name: true, email: true },
+        });
+        if (user) {
+          session.user.name = user.name;
+          session.user.email = user.email;
+        }
       }
       return session;
     },

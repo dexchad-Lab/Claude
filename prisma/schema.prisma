@@ -40,6 +40,8 @@ model JobApplication {
   aboutCompany   String?
   status         ApplicationStatus @default(APPLIED)
   outcomeNotes   String?
+  appliedAt      DateTime          @default(now())
+  followUpAt     DateTime?
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @updatedAt
 
