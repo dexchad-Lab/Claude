@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { authConfig } from "@/auth.config";
+import { isLoginLockedOut, recordLoginAttempt } from "@/lib/rateLimit";
 
 const credentialsSchema = z.object({
   email: z.email(),
@@ -23,15 +24,23 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const parsed = credentialsSchema.safeParse(credentials);
         if (!parsed.success) return null;
 
-        const user = await prisma.user.findUnique({
-          where: { email: parsed.data.email },
-        });
-        if (!user) return null;
+        const email = parsed.data.email;
+
+        if (await isLoginLockedOut(email)) {
+          return null;
+        }
+
+        const user = await prisma.user.findUnique({ where: { email } });
+        if (!user) {
+          await recordLoginAttempt(email, false);
+          return null;
+        }
 
         const passwordsMatch = await bcrypt.compare(
           parsed.data.password,
           user.passwordHash,
         );
+        await recordLoginAttempt(email, passwordsMatch);
         if (!passwordsMatch) return null;
 
         return { id: user.id, email: user.email, name: user.name };

@@ -14,9 +14,14 @@ export default async function AppLayout({
     redirect("/login");
   }
 
-  const pendingRequestsCount = await prisma.connection.count({
-    where: { addresseeId: session.user.id, status: "PENDING" },
-  });
+  const [pendingRequestsCount, unreadMessagesCount] = await Promise.all([
+    prisma.connection.count({
+      where: { addresseeId: session.user.id, status: "PENDING" },
+    }),
+    prisma.message.count({
+      where: { recipientId: session.user.id, readAt: null },
+    }),
+  ]);
 
   return (
     <PresenceProvider>
@@ -24,6 +29,7 @@ export default async function AppLayout({
         <NavBar
           userLabel={session.user.name ?? session.user.email ?? ""}
           pendingRequestsCount={pendingRequestsCount}
+          unreadMessagesCount={unreadMessagesCount}
         />
         <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8 sm:px-6">
           {children}

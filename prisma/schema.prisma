@@ -69,6 +69,15 @@ model Message {
   @@index([recipientId, senderId])
 }
 
+model LoginAttempt {
+  id        String   @id @default(cuid())
+  email     String
+  succeeded Boolean
+  createdAt DateTime @default(now())
+
+  @@index([email, createdAt])
+}
+
 model JobApplication {
   id             String            @id @default(cuid())
   userId         String

@@ -17,6 +17,15 @@ export default async function NetworkPage() {
     orderBy: { createdAt: "desc" },
   });
 
+  const unreadCounts = await prisma.message.groupBy({
+    by: ["senderId"],
+    where: { recipientId: userId, readAt: null },
+    _count: true,
+  });
+  const unreadBySender = new Map(
+    unreadCounts.map((row) => [row.senderId, row._count]),
+  );
+
   const pendingReceived: ConnectionPerson[] = [];
   const pendingSent: ConnectionPerson[] = [];
   const connections: ConnectionPerson[] = [];
@@ -29,6 +38,7 @@ export default async function NetworkPage() {
       userId: other.id,
       name: other.name ?? other.email,
       email: other.email,
+      unreadCount: unreadBySender.get(other.id) ?? 0,
     };
 
     if (c.status === "ACCEPTED") {

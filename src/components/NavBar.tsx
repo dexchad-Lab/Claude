@@ -61,10 +61,14 @@ function LogoutIcon() {
 export function NavBar({
   userLabel,
   pendingRequestsCount = 0,
+  unreadMessagesCount = 0,
 }: {
   userLabel: string;
   pendingRequestsCount?: number;
+  unreadMessagesCount?: number;
 }) {
+  const networkBadgeCount = pendingRequestsCount + unreadMessagesCount;
+
   return (
     <header className="border-b border-gray-200 bg-white">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-2 px-4 py-3 sm:px-6">
@@ -77,16 +81,16 @@ export function NavBar({
         <div className="flex shrink-0 items-center gap-1 sm:gap-4">
           <Link
             href="/network"
-            aria-label="Network"
+            aria-label={`Network${networkBadgeCount > 0 ? ` (${networkBadgeCount} new)` : ""}`}
             className="relative flex items-center gap-1.5 rounded-md p-2 text-gray-500 hover:text-primary sm:p-0"
           >
             <span className="sm:hidden">
               <NetworkIcon />
             </span>
             <span className="hidden text-sm sm:inline">Network</span>
-            {pendingRequestsCount > 0 && (
+            {networkBadgeCount > 0 && (
               <span className="absolute -right-0.5 -top-0.5 rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] font-medium leading-none text-white sm:static sm:ml-1 sm:text-xs">
-                {pendingRequestsCount}
+                {networkBadgeCount}
               </span>
             )}
           </Link>

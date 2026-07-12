@@ -44,6 +44,15 @@ export default async function ChatPage({
     take: 200,
   });
 
+  await prisma.message.updateMany({
+    where: {
+      senderId: otherUserId,
+      recipientId: currentUserId,
+      readAt: null,
+    },
+    data: { readAt: new Date() },
+  });
+
   return (
     <div className="mx-auto max-w-2xl">
       <ChatThread

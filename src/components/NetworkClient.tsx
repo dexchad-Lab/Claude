@@ -16,6 +16,7 @@ export type ConnectionPerson = {
   userId: string;
   name: string;
   email: string;
+  unreadCount?: number;
 };
 
 const initialState: ConnectionActionState = {};
@@ -140,9 +141,14 @@ export function NetworkClient({
                   </div>
                   <Link
                     href={`/chat/${person.userId}`}
-                    className="rounded-md border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50"
+                    className="relative rounded-md border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50"
                   >
                     Message
+                    {!!person.unreadCount && (
+                      <span className="absolute -right-1.5 -top-1.5 rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] font-medium leading-none text-white">
+                        {person.unreadCount}
+                      </span>
+                    )}
                   </Link>
                 </li>
               );
