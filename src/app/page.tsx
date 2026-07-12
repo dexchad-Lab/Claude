@@ -42,7 +42,7 @@ export default async function Home() {
             </Link>
             <Link
               href="/signup"
-              className="rounded-md bg-gray-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-gray-800"
+              className="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-white hover:bg-primary-hover"
             >
               Sign up
             </Link>
@@ -64,7 +64,7 @@ export default async function Home() {
           <div className="mt-8 flex justify-center gap-3">
             <Link
               href="/signup"
-              className="rounded-md bg-gray-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-gray-800"
+              className="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-hover"
             >
               Get started free
             </Link>

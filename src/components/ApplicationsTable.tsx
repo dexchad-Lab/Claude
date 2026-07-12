@@ -178,7 +178,7 @@ export function ApplicationsTable({
                       handleFetchUrl();
                     }
                   }}
-                  className="w-72 max-w-full rounded-md border border-gray-300 bg-white px-2 py-1 text-xs focus:border-gray-400 focus:outline-none"
+                  className="w-72 max-w-full rounded-md border border-gray-300 bg-white px-2 py-1 text-xs focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 />
                 <button
                   type="button"
@@ -240,7 +240,7 @@ export function ApplicationsTable({
                   type="button"
                   onClick={handleCreateSubmit}
                   disabled={creating}
-                  className="rounded-md bg-gray-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+                  className="rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-white hover:bg-primary-hover disabled:opacity-50"
                 >
                   {creating ? "Adding…" : "+ Add application"}
                 </button>

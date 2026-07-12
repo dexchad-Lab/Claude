@@ -17,7 +17,7 @@ export function NavBar({
         <div className="flex items-center gap-4">
           <Link
             href="/network"
-            className="relative text-sm text-gray-500 hover:text-gray-900"
+            className="relative text-sm text-gray-500 hover:text-primary"
           >
             Network
             {pendingRequestsCount > 0 && (
@@ -28,7 +28,7 @@ export function NavBar({
           </Link>
           <Link
             href="/settings"
-            className="text-sm text-gray-500 hover:text-gray-900"
+            className="text-sm text-gray-500 hover:text-primary"
           >
             {userLabel}
           </Link>

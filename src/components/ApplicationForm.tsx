@@ -44,7 +44,7 @@ export function ApplicationForm({
             type="text"
             required
             defaultValue={initial?.companyName}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none"
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
           />
         </div>
         <div>
@@ -60,7 +60,7 @@ export function ApplicationForm({
             type="text"
             required
             defaultValue={initial?.jobTitle}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none"
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
           />
         </div>
       </div>
@@ -77,7 +77,7 @@ export function ApplicationForm({
           name="jobDescription"
           rows={6}
           defaultValue={initial?.jobDescription}
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none"
+          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
         />
       </div>
 
@@ -93,7 +93,7 @@ export function ApplicationForm({
           name="aboutCompany"
           rows={4}
           defaultValue={initial?.aboutCompany}
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none"
+          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
         />
       </div>
 
@@ -112,7 +112,7 @@ export function ApplicationForm({
           rows={3}
           defaultValue={initial?.outcomeNotes}
           placeholder="Final outcome, reflections, or anything worth remembering"
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none"
+          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
         />
       </div>
 
@@ -121,7 +121,7 @@ export function ApplicationForm({
       <button
         type="submit"
         disabled={pending}
-        className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+        className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-hover disabled:opacity-50"
       >
         {pending ? "Saving..." : submitLabel}
       </button>

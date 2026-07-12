@@ -56,12 +56,12 @@ export function NetworkClient({
             name="email"
             placeholder="Their account email"
             required
-            className="w-64 max-w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none"
+            className="w-64 max-w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
           />
           <button
             type="submit"
             disabled={pending}
-            className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-hover disabled:opacity-50"
           >
             {pending ? "Sending..." : "Send request"}
           </button>
@@ -91,7 +91,7 @@ export function NetworkClient({
                   <button
                     type="button"
                     onClick={() => respond(person.connectionId, true)}
-                    className="rounded-md bg-gray-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-gray-800"
+                    className="rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-white hover:bg-primary-hover"
                   >
                     Accept
                   </button>

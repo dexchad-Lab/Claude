@@ -41,7 +41,7 @@ export function LinkListInput({
               placeholder="Label (e.g. Job Posting)"
               value={link.label}
               onChange={(e) => updateLink(index, "label", e.target.value)}
-              className="w-40 rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none"
+              className="w-40 rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             />
             <input
               type="url"
@@ -49,7 +49,7 @@ export function LinkListInput({
               placeholder="https://..."
               value={link.url}
               onChange={(e) => updateLink(index, "url", e.target.value)}
-              className="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none"
+              className="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             />
             <button
               type="button"

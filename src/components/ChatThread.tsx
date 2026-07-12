@@ -105,7 +105,7 @@ export function ChatThread({
               <div
                 className={`max-w-[75%] rounded-lg px-3 py-2 text-sm ${
                   isMine
-                    ? "bg-gray-900 text-white"
+                    ? "bg-primary text-white"
                     : "bg-gray-100 text-gray-900"
                 }`}
               >
@@ -139,13 +139,13 @@ export function ChatThread({
             }}
             rows={1}
             placeholder="Type a message..."
-            className="flex-1 resize-none rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none"
+            className="flex-1 resize-none rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
           />
           <button
             type="button"
             onClick={handleSend}
             disabled={sending || !content.trim()}
-            className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-hover disabled:opacity-50"
           >
             Send
           </button>
