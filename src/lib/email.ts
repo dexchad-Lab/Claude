@@ -80,7 +80,7 @@ export async function sendFollowUpReminderEmail(
     return { sent: false, error: "Email not configured" };
   }
 
-  const from = process.env.EMAIL_FROM || "Job Application Tracker <onboarding@resend.dev>";
+  const from = process.env.EMAIL_FROM || "Huntly <onboarding@resend.dev>";
 
   try {
     await resend.emails.send({

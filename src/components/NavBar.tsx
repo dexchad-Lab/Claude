@@ -76,7 +76,7 @@ export function NavBar({
           href="/dashboard"
           className="min-w-0 truncate text-sm font-semibold text-gray-900"
         >
-          Job Application Tracker
+          Huntly
         </Link>
         <div className="flex shrink-0 items-center gap-1 sm:gap-4">
           <Link

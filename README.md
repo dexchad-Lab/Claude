@@ -1,4 +1,4 @@
-# Job Application Tracker
+# Huntly
 
 Track job applications — job description, company info, relevant links, the tailored resume for each job, status history with an outcome, and follow-up reminders — plus connect and chat in real time with other users.
 

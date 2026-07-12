@@ -8,7 +8,7 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Job Application Tracker",
+  title: "Huntly",
   description: "Track job applications, tailored resumes, and outcomes.",
 };
 
