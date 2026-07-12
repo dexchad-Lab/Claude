@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+/* Class-based dark mode: only ever active when the theme toggle adds
+   `.dark` to <html> (see ThemeToggle.tsx), never from OS preference alone.
+   Marketing/auth pages don't opt into any dark: classes, so they always
+   stay light regardless of this. This also fixes a real bug where relying
+   on prefers-color-scheme silently flipped --foreground near-white while
+   inputs kept an explicit white background, making typed text invisible
+   on phones with system dark mode on. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -10,6 +19,11 @@
   --brand-primary-foreground: #ffffff;
   --brand-accent: #16a34a;
   --brand-destructive: #dc2626;
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
 }
 
 @theme inline {
@@ -23,16 +37,23 @@
   --font-sans: var(--font-plus-jakarta-sans);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
+}
+
+/* Tells the browser which palette to use for native form-control chrome
+   (text input caret/background, date pickers, etc). Without this, some
+   browsers auto-darken form controls based on OS preference regardless of
+   our own CSS, which is the other half of the invisible-text-on-mobile
+   bug — explicit color-scheme + explicit text colors on inputs together
+   close it off completely. */
+:root {
+  color-scheme: light;
+}
+
+.dark {
+  color-scheme: dark;
 }
 
 @keyframes glow-pulse {

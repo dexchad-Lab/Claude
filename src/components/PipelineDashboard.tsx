@@ -58,15 +58,15 @@ function StatTile({
   const styles = STAT_ACCENTS[accent];
   return (
     <div
-      className={`rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition ${styles.ring}`}
+      className={`rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition dark:border-gray-800 dark:bg-gray-900 ${styles.ring}`}
     >
       <div className="flex items-center gap-3">
         <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${styles.icon}`}>
           {icon}
         </div>
         <div className="min-w-0">
-          <p className="truncate text-xs text-gray-500">{label}</p>
-          <p className="text-2xl font-semibold tracking-tight text-gray-900">{value}</p>
+          <p className="truncate text-xs text-gray-500 dark:text-gray-400">{label}</p>
+          <p className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-gray-100">{value}</p>
         </div>
       </div>
     </div>
@@ -75,12 +75,12 @@ function StatTile({
 
 function FunnelChart({ stages, total }: { stages: FunnelStage[]; total: number }) {
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+    <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
       <div className="mb-4 flex items-center gap-2">
         <FunnelIcon className="h-4 w-4 text-primary" />
-        <h2 className="text-sm font-semibold text-gray-900">Pipeline funnel</h2>
+        <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Pipeline funnel</h2>
       </div>
-      <p className="mb-4 text-xs text-gray-500">
+      <p className="mb-4 text-xs text-gray-500 dark:text-gray-400">
         Applications that have ever reached each stage
       </p>
       <div className="space-y-3">
@@ -89,15 +89,15 @@ function FunnelChart({ stages, total }: { stages: FunnelStage[]; total: number }
           return (
             <div key={stage.status} className="group">
               <div className="mb-1 flex items-center justify-between text-xs">
-                <span className="font-medium text-gray-700">{stage.label}</span>
-                <span className="tabular-nums text-gray-500">
+                <span className="font-medium text-gray-700 dark:text-gray-300">{stage.label}</span>
+                <span className="tabular-nums text-gray-500 dark:text-gray-400">
                   {stage.count}{" "}
                   <span className="text-gray-400">
                     ({total > 0 ? Math.round(pct) : 0}%)
                   </span>
                 </span>
               </div>
-              <div className="h-[10px] w-full rounded-full bg-gray-100">
+              <div className="h-[10px] w-full rounded-full bg-gray-100 dark:bg-gray-800">
                 <div
                   className="h-[10px] rounded-full transition-all"
                   style={{
@@ -117,13 +117,13 @@ function FunnelChart({ stages, total }: { stages: FunnelStage[]; total: number }
 
 function ActivityFeed({ items }: { items: ActivityItem[] }) {
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+    <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
       <div className="mb-3 flex items-center gap-2">
         <ActivityIcon className="h-4 w-4 text-primary" />
-        <h2 className="text-sm font-semibold text-gray-900">Recent activity</h2>
+        <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Recent activity</h2>
       </div>
       {items.length === 0 ? (
-        <p className="text-sm text-gray-400">No status changes yet.</p>
+        <p className="text-sm text-gray-400 dark:text-gray-500">No status changes yet.</p>
       ) : (
         <ul className="space-y-3">
           {items.map((item) => (
@@ -134,12 +134,12 @@ function ActivityFeed({ items }: { items: ActivityItem[] }) {
               <div className="min-w-0">
                 <Link
                   href={`/applications/${item.applicationId}`}
-                  className="font-medium text-gray-900 hover:underline"
+                  className="font-medium text-gray-900 hover:underline dark:text-gray-100"
                 >
                   {item.companyName}
                 </Link>{" "}
-                <span className="text-gray-500">&middot; {item.jobTitle}</span>
-                <p className="text-xs text-gray-500">
+                <span className="text-gray-500 dark:text-gray-400">&middot; {item.jobTitle}</span>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
                   {item.fromStatus ? (
                     <>
                       {STATUS_LABELS[item.fromStatus]} &rarr;{" "}

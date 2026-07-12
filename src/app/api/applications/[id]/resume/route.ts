@@ -93,10 +93,12 @@ export async function GET(
     );
   }
 
+  const inline = request.nextUrl.searchParams.get("mode") === "inline";
+
   return new NextResponse(new Uint8Array(buffer), {
     headers: {
       "Content-Type": application.resume.mimeType,
-      "Content-Disposition": `attachment; filename="${encodeURIComponent(
+      "Content-Disposition": `${inline ? "inline" : "attachment"}; filename="${encodeURIComponent(
         application.resume.originalFilename,
       )}"`,
     },

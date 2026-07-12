@@ -51,7 +51,7 @@ export default async function NetworkPage() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <h1 className="mb-6 text-xl font-semibold text-gray-900">Network</h1>
+      <h1 className="mb-6 text-xl font-semibold text-gray-900 dark:text-gray-100">Network</h1>
       <NetworkClient
         pendingReceived={pendingReceived}
         pendingSent={pendingSent}

@@ -7,6 +7,8 @@ import { STATUS_LABELS } from "@/components/StatusBadge";
 import { type StatusHistoryEntry } from "@/components/StatusTimeline";
 import { ApplicationDetailPanel } from "@/components/ApplicationDetailPanel";
 import { DeleteApplicationButton } from "@/components/DeleteApplicationButton";
+import { JobLinksControl } from "@/components/JobLinksControl";
+import { ResumeRowControl } from "@/components/ResumeRowControl";
 import { EditIcon } from "@/components/icons";
 import { APPLICATION_STATUSES } from "@/lib/validations";
 import type { ApplicationStatus } from "@/generated/prisma";
@@ -42,12 +44,12 @@ function toDateInputValue(iso: string | null) {
 }
 
 const STATUS_SELECT_STYLES: Record<ApplicationStatus, string> = {
-  APPLIED: "bg-blue-50 text-blue-700",
-  SCREENING: "bg-purple-50 text-purple-700",
-  INTERVIEW: "bg-amber-50 text-amber-700",
-  OFFER: "bg-green-50 text-green-700",
-  REJECTED: "bg-red-50 text-red-700",
-  WITHDRAWN: "bg-gray-100 text-gray-600",
+  APPLIED: "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300",
+  SCREENING: "bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300",
+  INTERVIEW: "bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300",
+  OFFER: "bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300",
+  REJECTED: "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300",
+  WITHDRAWN: "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400",
 };
 
 const NEW_ROW = 0;
@@ -154,10 +156,10 @@ export function ApplicationsTable({
   }
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
+    <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
       <table ref={tableRef} className="w-full min-w-[680px] border-collapse text-sm">
         <thead>
-          <tr className="border-b border-gray-200 text-left text-xs font-medium uppercase tracking-wide text-gray-500">
+          <tr className="border-b border-gray-200 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:border-gray-800 dark:text-gray-400">
             <th className="w-8 px-3 py-2"></th>
             <th className="px-2 py-2">Company</th>
             <th className="px-2 py-2">Job title</th>
@@ -169,7 +171,7 @@ export function ApplicationsTable({
           </tr>
         </thead>
         <tbody>
-          <tr className="border-b border-gray-100 bg-gray-50">
+          <tr className="border-b border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-800/50">
             <td colSpan={8} className="px-3 py-2">
               <div className="flex flex-wrap items-center gap-2">
                 <input
@@ -183,24 +185,24 @@ export function ApplicationsTable({
                       handleFetchUrl();
                     }
                   }}
-                  className="w-72 max-w-full rounded-md border border-gray-300 bg-white px-2 py-1 text-xs focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                  className="w-72 max-w-full rounded-md border border-gray-300 bg-white px-2 py-1 text-xs text-gray-900 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
                 />
                 <button
                   type="button"
                   onClick={handleFetchUrl}
                   disabled={fetching || !newUrl.trim()}
-                  className="rounded-md border border-gray-300 bg-white px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-100 disabled:opacity-50"
+                  className="rounded-md border border-gray-300 bg-white px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-100 disabled:opacity-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
                 >
                   {fetching ? "Fetching…" : "Fetch details"}
                 </button>
                 {fetchNotice && (
-                  <span className="text-xs text-gray-500">{fetchNotice}</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">{fetchNotice}</span>
                 )}
               </div>
             </td>
           </tr>
-          <tr className="border-b border-gray-100 bg-gray-50">
-            <td className="px-3 py-2 text-gray-300">+</td>
+          <tr className="border-b border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-800/50">
+            <td className="px-3 py-2 text-gray-300 dark:text-gray-600">+</td>
             <td className="p-1">
               <input
                 data-row={NEW_ROW}
@@ -217,7 +219,7 @@ export function ApplicationsTable({
                     handleKeyDown(e, NEW_ROW, 0);
                   }
                 }}
-                className="w-full rounded border border-transparent bg-transparent px-2 py-1.5 focus:border-gray-300 focus:bg-white focus:outline-none"
+                className="w-full rounded border border-transparent bg-transparent px-2 py-1.5 text-gray-900 focus:border-gray-300 focus:bg-white focus:outline-none dark:text-gray-100 dark:focus:bg-gray-800"
               />
             </td>
             <td className="p-1">
@@ -236,7 +238,7 @@ export function ApplicationsTable({
                     handleKeyDown(e, NEW_ROW, 1);
                   }
                 }}
-                className="w-full rounded border border-transparent bg-transparent px-2 py-1.5 focus:border-gray-300 focus:bg-white focus:outline-none"
+                className="w-full rounded border border-transparent bg-transparent px-2 py-1.5 text-gray-900 focus:border-gray-300 focus:bg-white focus:outline-none dark:text-gray-100 dark:focus:bg-gray-800"
               />
             </td>
             <td className="p-1" colSpan={5}>
@@ -270,7 +272,7 @@ export function ApplicationsTable({
 
           {applications.length === 0 && (
             <tr>
-              <td colSpan={8} className="px-4 py-8 text-center text-sm text-gray-400">
+              <td colSpan={8} className="px-4 py-8 text-center text-sm text-gray-400 dark:text-gray-500">
                 No applications yet &mdash; add your first one above.
               </td>
             </tr>
@@ -404,13 +406,13 @@ function ApplicationRowGroup({
 
   return (
     <>
-      <tr className="border-b border-gray-100 hover:bg-gray-50">
+      <tr className="border-b border-gray-100 hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-800/50">
         <td className="px-3 py-2">
           <button
             type="button"
             onClick={onToggle}
             aria-label={isExpanded ? "Collapse" : "Expand"}
-            className="flex h-5 w-5 items-center justify-center rounded text-gray-400 hover:bg-gray-200 hover:text-gray-700"
+            className="flex h-5 w-5 items-center justify-center rounded text-gray-400 hover:bg-gray-200 hover:text-gray-700 dark:text-gray-500 dark:hover:bg-gray-700 dark:hover:text-gray-200"
           >
             <span
               className={`inline-block transition-transform ${isExpanded ? "rotate-90" : ""}`}
@@ -428,20 +430,24 @@ function ApplicationRowGroup({
             onChange={(e) => setCompanyName(e.target.value)}
             onBlur={saveCompanyName}
             onKeyDown={(e) => onKeyDown(e, row, 0)}
-            className="w-full rounded border border-transparent bg-transparent px-2 py-1.5 font-medium text-gray-900 focus:border-gray-300 focus:bg-white focus:outline-none"
+            className="w-full rounded border border-transparent bg-transparent px-2 py-1.5 font-medium text-gray-900 focus:border-gray-300 focus:bg-white focus:outline-none dark:text-gray-100 dark:focus:bg-gray-800"
           />
         </td>
         <td className="p-1">
-          <input
-            data-row={row}
-            data-col={1}
-            type="text"
-            value={jobTitle}
-            onChange={(e) => setJobTitle(e.target.value)}
-            onBlur={saveJobTitle}
-            onKeyDown={(e) => onKeyDown(e, row, 1)}
-            className="w-full rounded border border-transparent bg-transparent px-2 py-1.5 text-gray-700 focus:border-gray-300 focus:bg-white focus:outline-none"
-          />
+          <div className="flex items-center gap-1">
+            <input
+              data-row={row}
+              data-col={1}
+              type="text"
+              value={jobTitle}
+              onChange={(e) => setJobTitle(e.target.value)}
+              onBlur={saveJobTitle}
+              onKeyDown={(e) => onKeyDown(e, row, 1)}
+              className="w-full min-w-0 rounded border border-transparent bg-transparent px-2 py-1.5 text-gray-700 focus:border-gray-300 focus:bg-white focus:outline-none dark:text-gray-300 dark:focus:bg-gray-800"
+            />
+            <JobLinksControl applicationId={app.id} links={app.links} />
+            <ResumeRowControl applicationId={app.id} resume={app.resume} />
+          </div>
         </td>
         <td className="p-1">
           <select
@@ -468,7 +474,7 @@ function ApplicationRowGroup({
             onChange={(e) => setAppliedAt(e.target.value)}
             onBlur={saveAppliedAt}
             onKeyDown={(e) => onKeyDown(e, row, 3)}
-            className="w-full rounded border border-transparent bg-transparent px-2 py-1.5 text-xs text-gray-600 focus:border-gray-300 focus:bg-white focus:outline-none"
+            className="w-full rounded border border-transparent bg-transparent px-2 py-1.5 text-xs text-gray-600 focus:border-gray-300 focus:bg-white focus:outline-none dark:text-gray-400 dark:focus:bg-gray-800"
           />
         </td>
         <td className="hidden p-1 md:table-cell">
@@ -481,11 +487,11 @@ function ApplicationRowGroup({
             onBlur={saveFollowUpAt}
             onKeyDown={(e) => onKeyDown(e, row, 4)}
             className={`w-full rounded border border-transparent bg-transparent px-2 py-1.5 text-xs focus:border-gray-300 focus:bg-white focus:outline-none ${
-              isOverdue ? "font-medium text-red-600" : "text-gray-600"
+              isOverdue ? "font-medium text-red-600 dark:text-red-400" : "text-gray-600 dark:text-gray-400"
             }`}
           />
         </td>
-        <td className="hidden px-2 py-2 text-xs text-gray-400 sm:table-cell">
+        <td className="hidden px-2 py-2 text-xs text-gray-400 sm:table-cell dark:text-gray-500">
           {savingField ? "Saving…" : new Date(app.updatedAt).toLocaleDateString()}
         </td>
         <td className="px-2 py-1.5">
@@ -493,7 +499,7 @@ function ApplicationRowGroup({
             <Link
               href={`/applications/${app.id}/edit`}
               aria-label="Edit details"
-              className="flex h-7 w-7 items-center justify-center rounded-md text-gray-400 hover:bg-gray-100 hover:text-gray-700"
+              className="flex h-7 w-7 items-center justify-center rounded-md text-gray-400 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-500 dark:hover:bg-gray-800 dark:hover:text-gray-200"
             >
               <EditIcon className="h-3.5 w-3.5" />
             </Link>
@@ -515,7 +521,7 @@ function ApplicationRowGroup({
         </tr>
       )}
       {isExpanded && (
-        <tr className="border-b border-gray-100 bg-gray-50/60">
+        <tr className="border-b border-gray-100 bg-gray-50/60 dark:border-gray-800 dark:bg-gray-800/30">
           <td></td>
           <td colSpan={7} className="px-3 py-4">
             <ApplicationDetailPanel app={app} storageConfigured={storageConfigured} />

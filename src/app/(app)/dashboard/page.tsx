@@ -1,10 +1,8 @@
+import Link from "next/link";
 import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
 import { PipelineDashboard, type FunnelStage, type ActivityItem } from "@/components/PipelineDashboard";
-import type { ApplicationRow } from "@/components/ApplicationsTable";
-import { ApplicationsSection } from "@/components/ApplicationsSection";
 import { STATUS_LABELS } from "@/components/StatusBadge";
-import { isBlobConfigured } from "@/lib/upload";
+import { getUserApplications } from "@/lib/applications";
 import type { ApplicationStatus } from "@/generated/prisma";
 
 const FUNNEL_STATUSES: ApplicationStatus[] = [
@@ -18,15 +16,7 @@ export default async function DashboardPage() {
   const session = await auth();
   const userId = session!.user.id;
 
-  const applications = await prisma.jobApplication.findMany({
-    where: { userId },
-    orderBy: { updatedAt: "desc" },
-    include: {
-      links: true,
-      resume: true,
-      statusHistory: true,
-    },
-  });
+  const applications = await getUserApplications(userId);
 
   const total = applications.length;
   const offers = applications.filter((app) => app.status === "OFFER").length;
@@ -78,44 +68,25 @@ export default async function DashboardPage() {
     .sort((a, b) => new Date(b.changedAt).getTime() - new Date(a.changedAt).getTime())
     .slice(0, 8);
 
-  const tableRows: ApplicationRow[] = applications.map((app) => ({
-    id: app.id,
-    companyName: app.companyName,
-    jobTitle: app.jobTitle,
-    status: app.status,
-    updatedAt: app.updatedAt.toISOString(),
-    appliedAt: app.appliedAt.toISOString(),
-    followUpAt: app.followUpAt ? app.followUpAt.toISOString() : null,
-    jobDescription: app.jobDescription,
-    aboutCompany: app.aboutCompany,
-    outcomeNotes: app.outcomeNotes,
-    links: app.links.map((link) => ({ id: link.id, label: link.label, url: link.url })),
-    resume: app.resume
-      ? {
-          originalFilename: app.resume.originalFilename,
-          uploadedAt: app.resume.uploadedAt.toISOString(),
-        }
-      : null,
-    statusHistory: app.statusHistory.map((entry) => ({
-      id: entry.id,
-      fromStatus: entry.fromStatus,
-      toStatus: entry.toStatus,
-      note: entry.note,
-      changedAt: entry.changedAt.toISOString(),
-    })),
-  }));
-
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">
-          Your applications
-        </h1>
-        <p className="mt-1 text-sm text-gray-500">
-          {total === 0
-            ? "Add your first application below to get started."
-            : `Tracking ${total} application${total === 1 ? "" : "s"} — keep at it.`}
-        </p>
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-gray-100">
+            Your dashboard
+          </h1>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            {total === 0
+              ? "Add your first application to get started."
+              : `Tracking ${total} application${total === 1 ? "" : "s"} — keep at it.`}
+          </p>
+        </div>
+        <Link
+          href="/applications"
+          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-hover"
+        >
+          View all applications
+        </Link>
       </div>
 
       <PipelineDashboard
@@ -126,8 +97,6 @@ export default async function DashboardPage() {
         funnelStages={funnelStages}
         activity={activity}
       />
-
-      <ApplicationsSection applications={tableRows} storageConfigured={isBlobConfigured()} />
     </div>
   );
 }

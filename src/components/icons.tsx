@@ -102,3 +102,137 @@ export function ActivityIcon(props: { className?: string }) {
     </Icon>
   );
 }
+
+export function EyeIcon(props: { className?: string }) {
+  return (
+    <Icon {...props}>
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z" />
+      <circle cx="12" cy="12" r="3" />
+    </Icon>
+  );
+}
+
+export function DocumentIcon(props: { className?: string }) {
+  return (
+    <Icon {...props}>
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
+      <path d="M14 2v6h6" />
+      <path d="M9 13h6M9 17h6" />
+    </Icon>
+  );
+}
+
+export function PaperclipIcon(props: { className?: string }) {
+  return (
+    <Icon {...props}>
+      <path d="M21.44 11.05 12.25 20.24a5.5 5.5 0 0 1-7.78-7.78l9.19-9.19a3.5 3.5 0 0 1 4.95 4.95L9.41 17.41a1.5 1.5 0 0 1-2.12-2.12l8.49-8.49" />
+    </Icon>
+  );
+}
+
+export function DownloadIcon(props: { className?: string }) {
+  return (
+    <Icon {...props}>
+      <path d="M12 3v12" />
+      <path d="m7 10 5 5 5-5" />
+      <path d="M5 21h14" />
+    </Icon>
+  );
+}
+
+export function ChatBubbleIcon(props: { className?: string }) {
+  return (
+    <Icon {...props}>
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z" />
+    </Icon>
+  );
+}
+
+export function SunIcon(props: { className?: string }) {
+  return (
+    <Icon {...props}>
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+    </Icon>
+  );
+}
+
+export function MoonIcon(props: { className?: string }) {
+  return (
+    <Icon {...props}>
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
+    </Icon>
+  );
+}
+
+export function LayoutDashboardIcon(props: { className?: string }) {
+  return (
+    <Icon {...props}>
+      <rect x="3" y="3" width="7" height="9" rx="1" />
+      <rect x="14" y="3" width="7" height="5" rx="1" />
+      <rect x="14" y="12" width="7" height="9" rx="1" />
+      <rect x="3" y="16" width="7" height="5" rx="1" />
+    </Icon>
+  );
+}
+
+export function ListIcon(props: { className?: string }) {
+  return (
+    <Icon {...props}>
+      <path d="M8 6h13M8 12h13M8 18h13" />
+      <path d="M3 6h.01M3 12h.01M3 18h.01" />
+    </Icon>
+  );
+}
+
+export function TemplateIcon(props: { className?: string }) {
+  return (
+    <Icon {...props}>
+      <rect x="3" y="3" width="18" height="18" rx="2" />
+      <path d="M3 9h18M9 21V9" />
+    </Icon>
+  );
+}
+
+export function GlobeIcon(props: { className?: string }) {
+  return (
+    <Icon {...props}>
+      <circle cx="12" cy="12" r="10" />
+      <path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20Z" />
+    </Icon>
+  );
+}
+
+export function CompassIcon(props: { className?: string }) {
+  return (
+    <Icon {...props}>
+      <circle cx="12" cy="12" r="10" />
+      <path d="m16 8-4 8-4-4 8-4Z" />
+    </Icon>
+  );
+}
+
+export function UserIcon(props: { className?: string }) {
+  return (
+    <Icon {...props}>
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 21c0-4 4-6 8-6s8 2 8 6" />
+    </Icon>
+  );
+}
+
+export function MenuIcon(props: { className?: string }) {
+  return (
+    <Icon {...props}>
+      <path d="M4 6h16M4 12h16M4 18h16" />
+    </Icon>
+  );
+}
+
+export function CloseIcon(props: { className?: string }) {
+  return (
+    <Icon {...props}>
+      <path d="M18 6 6 18M6 6l12 12" />
+    </Icon>
+  );
+}

@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { quickCreateSchema, APPLICATION_STATUSES } from "@/lib/validations";
+import { quickCreateSchema, linkSchema, APPLICATION_STATUSES } from "@/lib/validations";
 import { fetchJobPostingFromUrl } from "@/lib/jobPosting";
 import { deleteResumeFile } from "@/lib/upload";
 import { z } from "zod";
@@ -173,6 +173,55 @@ export async function updateFollowUpAtAction(
     // clear any prior notification flag for it.
     data: { followUpAt: date, followUpNotifiedAt: null },
   });
+  revalidatePath("/dashboard");
+  return {};
+}
+
+export async function addLinkAction(
+  applicationId: string,
+  label: string,
+  url: string,
+) {
+  const session = await auth();
+  if (!session?.user) return { error: "Unauthorized" };
+
+  const parsed = linkSchema.safeParse({ label, url });
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Invalid input" };
+  }
+
+  const application = await requireOwnedApplication(
+    applicationId,
+    session.user.id,
+  );
+  if (!application) return { error: "Not found" };
+
+  await prisma.link.create({
+    data: {
+      jobApplicationId: applicationId,
+      label: parsed.data.label,
+      url: parsed.data.url,
+    },
+  });
+
+  revalidatePath("/dashboard");
+  return {};
+}
+
+export async function removeLinkAction(applicationId: string, linkId: string) {
+  const session = await auth();
+  if (!session?.user) return { error: "Unauthorized" };
+
+  const application = await requireOwnedApplication(
+    applicationId,
+    session.user.id,
+  );
+  if (!application) return { error: "Not found" };
+
+  await prisma.link.deleteMany({
+    where: { id: linkId, jobApplicationId: applicationId },
+  });
+
   revalidatePath("/dashboard");
   return {};
 }

@@ -2,6 +2,7 @@
 
 import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { EyeIcon, DownloadIcon } from "@/components/icons";
 
 export function ResumeUploader({
   applicationId,
@@ -56,30 +57,43 @@ export function ResumeUploader({
   }
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4">
-      <h2 className="mb-2 text-sm font-semibold text-gray-900">
+    <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+      <h2 className="mb-2 text-sm font-semibold text-gray-900 dark:text-gray-100">
         Tailored resume
       </h2>
 
       {resume ? (
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
-            <a
-              href={`/api/applications/${applicationId}/resume`}
-              className="text-sm font-medium text-gray-900 underline"
-            >
+            <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
               {resume.originalFilename}
-            </a>
-            <p className="text-xs text-gray-500">
+            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
               Uploaded {new Date(resume.uploadedAt).toLocaleDateString()}
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
+            <a
+              href={`/api/applications/${applicationId}/resume?mode=inline`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+            >
+              <EyeIcon className="h-3.5 w-3.5" />
+              Preview
+            </a>
+            <a
+              href={`/api/applications/${applicationId}/resume`}
+              className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+            >
+              <DownloadIcon className="h-3.5 w-3.5" />
+              Download
+            </a>
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={isPending}
-              className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+              className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
             >
               Replace
             </button>
@@ -87,7 +101,7 @@ export function ResumeUploader({
               type="button"
               onClick={handleDelete}
               disabled={isPending}
-              className="rounded-md border border-red-200 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 disabled:opacity-50"
+              className="rounded-md border border-red-200 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 disabled:opacity-50 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950"
             >
               Remove
             </button>
@@ -98,7 +112,7 @@ export function ResumeUploader({
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={isPending}
-          className="rounded-md border border-dashed border-gray-300 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-50"
+          className="rounded-md border border-dashed border-gray-300 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800"
         >
           {isPending ? "Uploading..." : "Upload resume (PDF or Word)"}
         </button>
@@ -112,10 +126,10 @@ export function ResumeUploader({
         className="hidden"
       />
 
-      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+      {error && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{error}</p>}
 
       {!storageConfigured && (
-        <p className="mt-2 rounded-md bg-amber-50 px-2.5 py-1.5 text-xs text-amber-700">
+        <p className="mt-2 rounded-md bg-amber-50 px-2.5 py-1.5 text-xs text-amber-700 dark:bg-amber-950 dark:text-amber-300">
           File storage isn&apos;t fully set up yet, so this resume may not
           stick around. Ask whoever manages the deployment to add Vercel
           Blob storage.

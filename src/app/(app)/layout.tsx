@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { NavBar } from "@/components/NavBar";
+import { Sidebar } from "@/components/Sidebar";
 import { PresenceProvider } from "@/components/PresenceProvider";
 
 export default async function AppLayout({
@@ -25,11 +25,10 @@ export default async function AppLayout({
 
   return (
     <PresenceProvider>
-      <div className="flex min-h-screen flex-col bg-gray-50">
-        <NavBar
+      <div className="flex min-h-screen flex-col bg-gray-50 md:flex-row dark:bg-gray-950">
+        <Sidebar
           userLabel={session.user.name ?? session.user.email ?? ""}
-          pendingRequestsCount={pendingRequestsCount}
-          unreadMessagesCount={unreadMessagesCount}
+          messagesBadgeCount={pendingRequestsCount + unreadMessagesCount}
         />
         <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8 sm:px-6">
           {children}
