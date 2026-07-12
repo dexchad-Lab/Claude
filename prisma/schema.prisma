@@ -79,19 +79,20 @@ model LoginAttempt {
 }
 
 model JobApplication {
-  id             String            @id @default(cuid())
-  userId         String
-  user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  companyName    String
-  jobTitle       String
-  jobDescription String  @default("")
-  aboutCompany   String?
-  status         ApplicationStatus @default(APPLIED)
-  outcomeNotes   String?
-  appliedAt      DateTime          @default(now())
-  followUpAt     DateTime?
-  createdAt      DateTime          @default(now())
-  updatedAt      DateTime          @updatedAt
+  id                 String            @id @default(cuid())
+  userId             String
+  user               User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyName        String
+  jobTitle           String
+  jobDescription     String            @default("")
+  aboutCompany       String?
+  status             ApplicationStatus @default(APPLIED)
+  outcomeNotes       String?
+  appliedAt          DateTime          @default(now())
+  followUpAt         DateTime?
+  followUpNotifiedAt DateTime?
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
 
   links         Link[]
   resume        Resume?
@@ -125,13 +126,13 @@ model Resume {
 }
 
 model StatusHistory {
-  id               String            @id @default(cuid())
+  id               String             @id @default(cuid())
   jobApplicationId String
-  jobApplication   JobApplication    @relation(fields: [jobApplicationId], references: [id], onDelete: Cascade)
+  jobApplication   JobApplication     @relation(fields: [jobApplicationId], references: [id], onDelete: Cascade)
   fromStatus       ApplicationStatus?
   toStatus         ApplicationStatus
   note             String?
-  changedAt        DateTime          @default(now())
+  changedAt        DateTime           @default(now())
 
   @@index([jobApplicationId])
 }

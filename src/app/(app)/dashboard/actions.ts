@@ -168,7 +168,9 @@ export async function updateFollowUpAtAction(
 
   await prisma.jobApplication.update({
     where: { id: applicationId },
-    data: { followUpAt: date },
+    // Changing the follow-up date means it's a new reminder target, so
+    // clear any prior notification flag for it.
+    data: { followUpAt: date, followUpNotifiedAt: null },
   });
   revalidatePath("/dashboard");
   return {};
