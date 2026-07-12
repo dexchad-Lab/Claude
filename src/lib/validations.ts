@@ -61,3 +61,11 @@ export const changePasswordSchema = z
     message: "New passwords do not match",
     path: ["confirmPassword"],
   });
+
+export const connectionRequestSchema = z.object({
+  email: z.email("Enter a valid email"),
+});
+
+export const messageSchema = z.object({
+  content: z.string().trim().min(1, "Message can't be empty").max(4000),
+});

@@ -14,7 +14,9 @@ export const authConfig = {
       const isProtected =
         nextUrl.pathname.startsWith("/dashboard") ||
         nextUrl.pathname.startsWith("/applications") ||
-        nextUrl.pathname.startsWith("/settings");
+        nextUrl.pathname.startsWith("/settings") ||
+        nextUrl.pathname.startsWith("/network") ||
+        nextUrl.pathname.startsWith("/chat");
 
       if (isProtected) {
         return isLoggedIn;
